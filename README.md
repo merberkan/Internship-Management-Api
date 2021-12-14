@@ -1,1 +1,2 @@
-# Internship-Management-Api
+# Internship-Management
+Graduation Project

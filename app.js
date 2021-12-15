@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
     console.log("catched")
 });
 // app.use('/', require('./routes/pages'));
-// app.use('/auth' ,require('./routes/auth'));
+app.use('/user' ,require('./routes/user'));
 // app.use('/adminPanel',require('./routes/adminPanel'));
 // app.use('/ownerPanel',require('./routes/ownerPanel'));
 // app.use('/filterEvent',require('./routes/filterEvent'));

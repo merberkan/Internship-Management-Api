@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 const UserModel = require('../models/user');
+const RoleModel = require('../models/role');
+const UserRoleModel = require('../models/userRole');
 
 // const {
 //     SQL_HOST,
@@ -41,16 +43,25 @@ const sequelize = new Sequelize(SQL_DB, SQL_USERNAME, SQL_PWD, {
 });
 
 const User = UserModel(sequelize, Sequelize);
+const Role = RoleModel(sequelize, Sequelize);
+const UserRole = UserRoleModel(sequelize, Sequelize);
+
 
 const Models = {
-    User
+    User,
+    Role,
+    UserRole
 };
 
 const connection = {};
 
 module.exports = async(includeSequelize) => {
     // PK FK define parts
+    // Models.Role.hasMany(Models.UserRole, {foreignKey: 'RoleId'});
+    // Models.UserRole.hasMany(Models.Role,{foreignKey: 'RoleId'});
 
+    // Models.User.hasMany(Models.UserRole, {foreignKey: 'UserId'});
+    // Models.UserRole.hasMany(Models.User,{foreignKey: 'UserId'});
 
 
     // End of PK FK define parts

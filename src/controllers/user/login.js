@@ -3,6 +3,7 @@ const{
     decode,
     verify
 } = require('jsonwebtoken');
+const md5 = require('md5');
 const connectToDatabase = require("../../lib/database");
 
 const handler = async (req,res) => {
@@ -15,7 +16,9 @@ const handler = async (req,res) => {
             message: "User_NotFound",
           });
     } 
-    if(user.Password !== model.password){
+    if(user.Password !== md5(model.password)){
+        console.log("user pass:", user.Password)
+        console.log("girilen pass:", md5(model.password));
         res.status(400).send({
             message: "User_NotFound",
           });

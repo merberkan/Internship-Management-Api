@@ -3,6 +3,7 @@ const readXlsxFile = require("read-excel-file/node");
 var fs = require("fs");
 const connectToDatabase = require("../../lib/database");
 const {uuid} = require('../../helpers/utils');
+const md5 = require('md5');
 
 const upload = async (req, res) => {
   const { User, UserRole } = await connectToDatabase();
@@ -25,8 +26,8 @@ const upload = async (req, res) => {
         data.push({
           name: row[0],
           surname: row[1],
-          schoolId: row[2],
-          password: row[3],
+          schoolId: row[2].toString(),
+          password: row[3].toString(),
           email: row[4],
         });
       });
@@ -43,7 +44,7 @@ const upload = async (req, res) => {
         Name: tmp.name,
         Surname: tmp.surname,
         SchoolId: tmp.schoolId,
-        Password: tmp.password,
+        Password: md5(tmp.password),
         Email: tmp.email,
       });
       const userRoleResult = await UserRole.create({

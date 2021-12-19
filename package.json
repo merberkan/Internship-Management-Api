@@ -19,9 +19,9 @@
     "node-excel-export": "^1.4.4",
     "parse-multipart": "^1.0.4",
     "read-excel-file": "^5.2.10",
-    "sequelize": "^6.12.0-alpha.1",
     "uuid": "^8.3.2",
-    "xlsx": "^0.17.4"
+    "xlsx": "^0.17.4",
+    "sequelize": "^5.21.7"
   },
   "devDependencies": {}
 }

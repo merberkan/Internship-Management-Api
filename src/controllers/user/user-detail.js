@@ -4,14 +4,23 @@ const connectToDatabase = require("../../lib/database");
 const handler = async (req,res) => {
     try {
         const { User } = await connectToDatabase();
-        const user = await User.findOne({ where: { Id: 1 } });
-        res.status(200).send({
-            message: "Success",
-            data: user
+        const key = req.params.uniqueKey;
+        const user = await User.findOne({ where: { UniqueKey: key, IsDeleted:false } });
+        if(user){
+          res.status(200).send({
+            data: {isSuccess: true,user}
         });
-        console.log("user:", user);
+        }else{
+          res.status(400).send({
+            message: "User cannot found!",
+            data: { isSuccess: false },
+          });
+        }
       } catch (error) {
-        console.log("[USER CONTROLLER:]", error);
+        res.status(400).send({
+          message: "[USER CONTROLLER]",
+          data: { isSuccess: false, error:error },
+        });
       }
 }
 

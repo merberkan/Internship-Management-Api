@@ -5,7 +5,7 @@ const { uuid } = require("../../helpers/utils");
 const md5 = require("md5");
 
 const upload = async (req, res) => {
-  const { User, UserRole, Role } = await connectToDatabase();
+  const { User, UserRole, Role, UserCompany } = await connectToDatabase();
   try {
     // Checks if file is exist
     if (req.file == undefined) {
@@ -16,7 +16,10 @@ const upload = async (req, res) => {
       "/Users/mertberkanakdeniz/Documents/GitHub/Internship-Management-Api/Internship-Management-Api/resources/static/assets/uploads/" +
       req.file.filename;
     // Read data from excel
+
     const excelData = await readXlsxFile(path).then((rows) => {
+      console.log("istek geldi")
+
       // skip header
       rows.shift();
       let data = [];
@@ -36,7 +39,7 @@ const upload = async (req, res) => {
       // returns data
       return data;
     });
-    if (excelData.length > 1) {
+    if (excelData.length > 0) {
       const roles = await Role.findAll({
         attributes: ['Id']
       }).map((t) => { return {id: t.Id}})
@@ -45,6 +48,7 @@ const upload = async (req, res) => {
         attributes: ['Email']
       }).map((t) => { return {email: t.Email}})
       // Adds all the data in the Excel file to the database
+      console.log("geldi")
       for (let i = 0; i < excelData.length; i++) {
         let tmp = excelData[i];
         const roleCheck = roles.find(w => w.id == tmp.roleId);
@@ -57,10 +61,16 @@ const upload = async (req, res) => {
             SchoolId: tmp.schoolId,
             Password: md5(tmp.password),
             Email: tmp.email,
+            CompanyId: 1
           });
           const userRoleResult = await UserRole.create({
             UserId: userResult.dataValues.Id,
             RoleId: tmp.roleId,
+          });
+          const userCompanyResult = await UserCompany.create({
+            UniqueKey: uuid(),
+            UserId: userResult.dataValues.Id,
+            CompanyId: 1,
           });
         }
       }

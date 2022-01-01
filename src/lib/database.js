@@ -2,6 +2,10 @@ const Sequelize = require('sequelize');
 const UserModel = require('../models/user');
 const RoleModel = require('../models/role');
 const UserRoleModel = require('../models/userRole');
+const CompanyModel = require('../models/company');
+const StakeholderCompanyModel = require('../models/stakeholderCompany');
+const StakeholderModel = require('../models/stakeholder');
+const UserStakeholderModel = require('../models/userStakeholder');
 
 // const {
 //     SQL_HOST,
@@ -45,29 +49,47 @@ const sequelize = new Sequelize(SQL_DB, SQL_USERNAME, SQL_PWD, {
 const User = UserModel(sequelize, Sequelize);
 const Role = RoleModel(sequelize, Sequelize);
 const UserRole = UserRoleModel(sequelize, Sequelize);
+const Company = CompanyModel(sequelize,Sequelize);
+const StakeholderCompany = StakeholderCompanyModel(sequelize,Sequelize);
+const Stakeholder = StakeholderModel(sequelize,Sequelize);
+const UserStakeholder = UserStakeholderModel(sequelize,Sequelize);
 
 
 const Models = {
     User,
     Role,
-    UserRole
+    UserRole,
+    Company,
+    StakeholderCompany,
+    Stakeholder,
+    UserStakeholder
 };
 
 const connection = {};
 
 module.exports = async(includeSequelize) => {
     // PK FK define parts
-    // Models.Role.hasMany(Models.UserRole, {foreignKey: 'RoleId'});
-    // Models.UserRole.hasMany(Models.Role,{foreignKey: 'RoleId'});
+    Models.Role.hasMany(Models.UserRole, {foreignKey: 'RoleId'});
+    Models.UserRole.belongsTo(Models.Role,{foreignKey: 'RoleId'});
 
-    // Models.User.hasMany(Models.UserRole, {foreignKey: 'UserId'});
-    // Models.UserRole.hasMany(Models.User,{foreignKey: 'UserId'});
+    Models.User.hasMany(Models.UserRole, {foreignKey: 'UserId'});
+    Models.UserRole.belongsTo(Models.User,{foreignKey: 'UserId'});
+
+    Models.Company.hasMany(Models.StakeholderCompany, {foreignKey: 'CompanyId'});
+    Models.StakeholderCompany.belongsTo(Models.Company,{foreignKey: 'CompanyId'});
+
+    Models.Stakeholder.hasMany(Models.StakeholderCompany, {foreignKey: 'StakeholderId'});
+    Models.StakeholderCompany.belongsTo(Models.Stakeholder,{foreignKey: 'StakeholderId'});
+
+    Models.User.hasMany(Models.UserStakeholder, {foreignKey: 'UserId'});
+    Models.UserStakeholder.belongsTo(Models.User,{foreignKey: 'UserId'});
 
 
     // End of PK FK define parts
     if(includeSequelize){
         Models["sequelize"] = sequelize;
     }
+    
 
     if(connection.isConnected){
         console.log(' USING EXISTING CONNECTION.');

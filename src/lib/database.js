@@ -84,6 +84,12 @@ module.exports = async(includeSequelize) => {
     Models.User.hasMany(Models.UserStakeholder, {foreignKey: 'UserId'});
     Models.UserStakeholder.belongsTo(Models.User,{foreignKey: 'UserId'});
 
+    Models.Stakeholder.hasMany(Models.UserStakeholder, {foreignKey: 'StakeholderId'});
+    Models.UserStakeholder.belongsTo(Models.Stakeholder,{foreignKey: 'StakeholderId'});
+
+    Models.UserStakeholder.hasMany(Models.StakeholderCompany, {foreignKey: 'StakeholderId'});
+    Models.StakeholderCompany.belongsTo(Models.UserStakeholder,{foreignKey: 'StakeholderId'});
+
 
     // End of PK FK define parts
     if(includeSequelize){

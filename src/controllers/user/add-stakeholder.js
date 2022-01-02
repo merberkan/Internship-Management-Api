@@ -172,6 +172,7 @@ const list = async (req, res) => {
     Stakeholder,
     StakeholderCompany,
     Company,
+    UserStakeholder
   } = await connectToDatabase();
   const usercode = req.params.usercode;
   //* Checks if the user exist
@@ -185,6 +186,34 @@ const list = async (req, res) => {
       data: { ok: false },
     });
   } else {
+    const currentStakeholder = await UserStakeholder.findAll({
+      where: {UserId: isExist.Id},
+      include: [
+        {
+          model: Stakeholder,
+          attributes: ['Name','Surname'],
+          include:{
+            model: StakeholderCompany,
+            include: {
+              model: Company,
+              attributes: ['Name']
+            }
+          }
+        }
+      ]
+    }).map((t) => {
+      const name = t.dataValues.Stakeholder.Name;
+      const surname = t.dataValues.Stakeholder.Surname;
+      const companyName = t.dataValues.Stakeholder.StakeholderCompanies[0].dataValues.Company.dataValues.Name
+      const response = name + " " + surname + "(" + companyName + ")" 
+      return {
+        fullname: response,
+      }
+    });
+    console.log("Current stakeholder geldi: ",currentStakeholder);
+    // console.log("Current stakeholder geldi: ",currentStakeholder.dataValues.Stakeholder.StakeholderCompanies[0].dataValues.Company.dataValues.Name);
+    console.log("---------------------------------")
+
     const stakeholders = await Stakeholder.findAll({
       where: { IsDeleted: false },
       attributes: ["Name", "Surname","Email"],
@@ -207,7 +236,7 @@ const list = async (req, res) => {
     });
     res.status(200).send({
       message: "List returned successfully",
-      data: { ok: true, data: stakeholders },
+      data: { ok: true, data: stakeholders, currentStakeholder },
     });
   }
 };

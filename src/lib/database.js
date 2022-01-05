@@ -6,6 +6,9 @@ const CompanyModel = require('../models/company');
 const StakeholderCompanyModel = require('../models/stakeholderCompany');
 const StakeholderModel = require('../models/stakeholder');
 const UserStakeholderModel = require('../models/userStakeholder');
+const FormModel = require('../models/Form');
+const FormTypeModel = require('../models/formType');
+const UserFormModel = require('../models/userForm');
 
 // const {
 //     SQL_HOST,
@@ -53,6 +56,9 @@ const Company = CompanyModel(sequelize,Sequelize);
 const StakeholderCompany = StakeholderCompanyModel(sequelize,Sequelize);
 const Stakeholder = StakeholderModel(sequelize,Sequelize);
 const UserStakeholder = UserStakeholderModel(sequelize,Sequelize);
+const Form = FormModel(sequelize,Sequelize);
+const FormType = FormTypeModel(sequelize,Sequelize);
+const UserForm = UserFormModel(sequelize,Sequelize);
 
 
 const Models = {
@@ -62,7 +68,10 @@ const Models = {
     Company,
     StakeholderCompany,
     Stakeholder,
-    UserStakeholder
+    UserStakeholder,
+    Form,
+    FormType,
+    UserForm
 };
 
 const connection = {};
@@ -89,6 +98,38 @@ module.exports = async(includeSequelize) => {
 
     Models.UserStakeholder.hasMany(Models.StakeholderCompany, {foreignKey: 'StakeholderId'});
     Models.StakeholderCompany.belongsTo(Models.UserStakeholder,{foreignKey: 'StakeholderId'});
+
+    Models.User.hasMany(Models.Form, {foreignKey: 'InsertedUser'});
+    Models.Form.belongsTo(Models.User,{foreignKey: 'InsertedUser'});
+
+    Models.User.hasMany(Models.Form, {foreignKey: 'InsertedUser'});
+    Models.Form.belongsTo(Models.User,{foreignKey: 'InsertedUser'});
+
+    Models.FormType.hasMany(Models.Form, {foreignKey: 'FormTypeId'});
+    Models.Form.belongsTo(Models.FormType,{foreignKey: 'FormTypeId'});
+
+    Models.Form.hasMany(Models.UserForm, {foreignKey: 'FormId'});
+    Models.UserForm.belongsTo(Models.Form,{foreignKey: 'FormId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'StudentId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'StudentId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'HeadId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'HeadId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'DeanId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'DeanId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'CoordinatorId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'CoordinatorId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'StakeholderId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'StakeholderId'});
+
+    Models.User.hasMany(Models.UserForm, {foreignKey: 'GraderId'});
+    Models.UserForm.belongsTo(Models.User,{foreignKey: 'GraderId'});
+
+
 
 
     // End of PK FK define parts

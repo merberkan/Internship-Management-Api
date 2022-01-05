@@ -5,7 +5,7 @@ const { uuid } = require("../../helpers/utils");
 const md5 = require("md5");
 
 const upload = async (req, res) => {
-  const { User, UserRole, Role, UserCompany } = await connectToDatabase();
+  const { User, UserRole, Role} = await connectToDatabase();
   try {
     // Checks if file is exist
     if (req.file == undefined) {
@@ -67,17 +67,13 @@ const upload = async (req, res) => {
             UserId: userResult.dataValues.Id,
             RoleId: tmp.roleId,
           });
-          const userCompanyResult = await UserCompany.create({
-            UniqueKey: uuid(),
-            UserId: userResult.dataValues.Id,
-            CompanyId: 1,
-          });
         }
       }
       // Responds to client
       res.status(200).send({
         message: "Uploaded the file successfully: " + req.file.originalname,
         data: excelData,
+        ok:true
       });
     }
   } catch (error) {

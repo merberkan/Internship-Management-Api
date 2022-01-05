@@ -2,8 +2,8 @@ const {DataTypes, Sequelize} = require('sequelize');
 
 const RoleSchema = (sequlize, type) => sequlize.define('Role', {
     Id: {
-        type: type.UUID,
-        defaultValue: Sequelize.UUIDV1,
+        type: type.INTEGER,
+        autoIncrement: true,
         allowNull: false,
         primaryKey: true,
     },

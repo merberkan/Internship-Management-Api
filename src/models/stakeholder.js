@@ -7,19 +7,24 @@ const StakeholderSchema = (sequlize, type) => sequlize.define('Stakeholder', {
         allowNull: false,
         primaryKey: true,
     },
-    Name: {
+    Fullname: {
         type: type.STRING,
         allowNull: false
     },
-    Surname: {
+    Title: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true
     },
     Email: {
         type: type.STRING,
         allowNull: false
     },
     IsDeleted: {
+        type: type.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    IsConfirmed: {
         type: type.BOOLEAN,
         allowNull: false,
         defaultValue: false,

@@ -42,51 +42,50 @@ const register = async (req, res) => {
       });
       //* Creates a new Stakeholder
       const stakeholderResult = await Stakeholder.create({
-        Name: model.name,
-        Surname: model.surname,
+        Fullname: model.name + " "+ model.surname,
         Email: model.email,
       });
-      console.log("after stakeholder creation");
-      //* Checks if the Comapny exist
-      const isCompanyExist = await Company.findOne({
-        where: { Name: model.companyName, IsDeleted: false },
-      });
-      console.log("after control company exist");
-      if (isCompanyExist) {
-        //* Connect Stakeholder with company which is recorded already
-        const stakeholderCompanyResult = await StakeholderCompany.create({
-          CompanyId: isCompanyExist.Id,
-          StakeholderId: stakeholderResult.dataValues.Id,
-        });
-      } else {
-        console.log("deneme else ici");
-        //* Create a New Company
-        const companyResult = await Company.create({
-          UniqueKey: uuid(),
-          Name: model.companyName,
-        });
-        console.log("buraya geldi");
-        //* Connect Stakeholder with company which is created new
-        const stakeholderCompanyResult = await StakeholderCompany.create({
-          CompanyId: companyResult.dataValues.Id,
-          StakeholderId: stakeholderResult.dataValues.Id,
-        });
-        console.log("buraya da geldi");
-        //* Connect the Stakeholder with User
-        const isUserExist = await User.findOne({
-          where: { UniqueKey: usercode, IsDeleted: false },
-        });
-        if (!isUserExist) {
-          res.status(400).send({
-            message: "User Not Found",
-            data: { ok: false },
-          });
-        }
-        const userStakeholderResult = await UserStakeholder.create({
-          UserId: isUserExist.Id,
-          StakeholderId: stakeholderResult.dataValues.Id,
-        });
-      }
+      // console.log("after stakeholder creation");
+      // //* Checks if the Comapny exist
+      // const isCompanyExist = await Company.findOne({
+      //   where: { Name: model.companyName, IsDeleted: false },
+      // });
+      // console.log("after control company exist");
+      // if (isCompanyExist) {
+      //   //* Connect Stakeholder with company which is recorded already
+      //   const stakeholderCompanyResult = await StakeholderCompany.create({
+      //     CompanyId: isCompanyExist.Id,
+      //     StakeholderId: stakeholderResult.dataValues.Id,
+      //   });
+      // } else {
+      //   console.log("deneme else ici");
+      //   //* Create a New Company
+      //   const companyResult = await Company.create({
+      //     UniqueKey: uuid(),
+      //     Name: model.companyName,
+      //   });
+      //   console.log("buraya geldi");
+      //   //* Connect Stakeholder with company which is created new
+      //   const stakeholderCompanyResult = await StakeholderCompany.create({
+      //     CompanyId: companyResult.dataValues.Id,
+      //     StakeholderId: stakeholderResult.dataValues.Id,
+      //   });
+      //   console.log("buraya da geldi");
+      //   //* Connect the Stakeholder with User
+      //   const isUserExist = await User.findOne({
+      //     where: { UniqueKey: usercode, IsDeleted: false },
+      //   });
+      //   if (!isUserExist) {
+      //     res.status(400).send({
+      //       message: "User Not Found",
+      //       data: { ok: false },
+      //     });
+      //   }
+      //   const userStakeholderResult = await UserStakeholder.create({
+      //     UserId: isUserExist.Id,
+      //     StakeholderId: stakeholderResult.dataValues.Id,
+      //   });
+      // }
       //* Creating transport to send email
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -132,7 +131,7 @@ const register = async (req, res) => {
 };
 
 const registerComplete = async (req, res) => {
-  const { User } = await connectToDatabase();
+  const { User, Stakeholder } = await connectToDatabase();
   const model = req.body;
   //* Checks if the user exist
   if (model.password !== model.passwordApprove) {
@@ -152,6 +151,10 @@ const registerComplete = async (req, res) => {
       { Password: md5(model.password) },
       { where: { Id: isExist.Id } }
     );
+    await Stakeholder.update(
+      { IsConfirmed: true },
+      { where: { Email: isExist.Email } }
+    );
     //* Return success result
     res.status(200).send({
       message: "Password approved",
@@ -167,13 +170,8 @@ const registerComplete = async (req, res) => {
 };
 
 const list = async (req, res) => {
-  const {
-    User,
-    Stakeholder,
-    StakeholderCompany,
-    Company,
-    UserStakeholder
-  } = await connectToDatabase();
+  const { User, Stakeholder, StakeholderCompany, Company, UserStakeholder } =
+    await connectToDatabase();
   const usercode = req.params.usercode;
   //* Checks if the user exist
   const isExist = await User.findOne({
@@ -187,52 +185,57 @@ const list = async (req, res) => {
     });
   } else {
     const currentStakeholder = await UserStakeholder.findAll({
-      where: {UserId: isExist.Id},
+      where: { UserId: isExist.Id },
       include: [
         {
           model: Stakeholder,
-          attributes: ['Name','Surname'],
-          include:{
+          attributes: ["Fullname", "Title"],
+          include: {
             model: StakeholderCompany,
             include: {
               model: Company,
-              attributes: ['Name']
-            }
-          }
-        }
-      ]
+              attributes: ["Name"],
+            },
+          },
+        },
+      ],
     }).map((t) => {
-      const name = t.dataValues.Stakeholder.Name;
-      const surname = t.dataValues.Stakeholder.Surname;
-      const companyName = t.dataValues.Stakeholder.StakeholderCompanies[0].dataValues.Company.dataValues.Name
-      const response = name + " " + surname + "(" + companyName + ")" 
+      const fullname = t.dataValues.Stakeholder.Fullname;
+      const title = t.dataValues.Stakeholder.Title;
+      const companyName =
+        t.dataValues.Stakeholder.StakeholderCompanies[0].dataValues.Company
+          .dataValues.Name;
+      const response = companyName + " (" + fullname + ")";
       return {
         fullname: response,
-      }
+      };
     });
-    console.log("Current stakeholder geldi: ",currentStakeholder);
+    console.log("Current stakeholder geldi: ", currentStakeholder);
     // console.log("Current stakeholder geldi: ",currentStakeholder.dataValues.Stakeholder.StakeholderCompanies[0].dataValues.Company.dataValues.Name);
-    console.log("---------------------------------")
+    console.log("---------------------------------");
 
     const stakeholders = await Stakeholder.findAll({
-      where: { IsDeleted: false },
-      attributes: ["Name", "Surname","Email"],
-      include: [{
-        model: StakeholderCompany,
-        include: {
-          model: Company,
-          attributes: ["Name"],
+      where: { IsDeleted: false, IsConfirmed: true },
+      attributes: ["Fullname", "Email"],
+      include: [
+        {
+          model: StakeholderCompany,
+          include: {
+            model: Company,
+            attributes: ["Name"],
+          },
         },
-      }],
+      ],
     }).map((t) => {
-      const name = t.dataValues.Name;
-      const surname = t.dataValues.Surname;
-      const companyName = t.dataValues.StakeholderCompanies[0].dataValues.Company.Name
-      const response = name + " " + surname + "(" + companyName + ")" 
+      console.log("bak buraya:",t.dataValues)
+      const fullname = t.dataValues.Fullname;
+      const companyName = t.dataValues.StakeholderCompanies.length > 0 ? t.dataValues.StakeholderCompanies[0].dataValues.Company.Name:"";
+      const response = companyName + " (" + fullname + ")";
+
       return {
         fullname: response,
-        email: t.dataValues.Email
-      }
+        email: t.dataValues.Email,
+      };
     });
     res.status(200).send({
       message: "List returned successfully",
@@ -268,23 +271,23 @@ const update = async (req, res) => {
   } else {
     //* Deletes old stakeholder connected with user
     const oldStakeholders = await UserStakeholder.destroy({
-      where: {UserId: isUserExist.Id }
-    })
+      where: { UserId: isUserExist.Id },
+    });
     //* Connects new stakeholder with user
     const newStakeholder = await UserStakeholder.create({
       UserId: isUserExist.Id,
-      StakeholderId: isStakeholderExist.Id
-    })
+      StakeholderId: isStakeholderExist.Id,
+    });
     res.status(200).send({
       message: "Stakeholder Updated Successfully",
-      data: { ok: true},
+      data: { ok: true },
     });
   }
-}
+};
 
 module.exports = {
   register,
   registerComplete,
   list,
-  update
+  update,
 };

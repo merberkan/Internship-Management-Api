@@ -1,6 +1,6 @@
 const {DataTypes, Sequelize} = require('sequelize');
 
-const CompanySchema = (sequlize, type) => sequlize.define('Company', {
+const UserFormSchema = (sequlize, type) => sequlize.define('UserForm', {
     Id: {
         type: type.INTEGER,
         autoIncrement: true,
@@ -11,42 +11,43 @@ const CompanySchema = (sequlize, type) => sequlize.define('Company', {
         type: type.STRING,
         allowNull: false
     },
-    Name: {
+    StudentId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    Address: {
+    HeadId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    Sector: {
+    DeanId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    PhoneNo: {
+    CoordinatorId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    FaxNo: {
+    StakeholderId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    Email: {
+    GraderId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: ''
     },
-    WebAddress: {
-        type: type.STRING,
-        allowNull: false
-    },
-    CompanyEmployeeNo: {
-        type: type.STRING,
-        allowNull: false
-    },
-    IsDeleted: {
-        type: type.BOOLEAN,
+    FormId: {
+        type: type.INTEGER,
         allowNull: false,
-        defaultValue: false,
+    },
+    Value:{
+        type: type.STRING,
+        allowNull: false,
     }
 },{
     createdAt:false,
@@ -54,4 +55,4 @@ const CompanySchema = (sequlize, type) => sequlize.define('Company', {
     updatedAt: false,
 });
 
-module.exports = CompanySchema;
+module.exports = UserFormSchema;

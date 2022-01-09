@@ -1,6 +1,6 @@
 const {DataTypes, Sequelize} = require('sequelize');
 
-const RoleSchema = (sequlize, type) => sequlize.define('Role', {
+const FormTypeSchema = (sequlize, type) => sequlize.define('FormType', {
     Id: {
         type: type.INTEGER,
         autoIncrement: true,
@@ -10,10 +10,6 @@ const RoleSchema = (sequlize, type) => sequlize.define('Role', {
     Name: {
         type: type.STRING,
         allowNull: false
-    },
-    IsDefaultRole: {
-        type: type.BOOLEAN,
-        allowNull: false
     }
 },{
     createdAt:false,
@@ -21,4 +17,4 @@ const RoleSchema = (sequlize, type) => sequlize.define('Role', {
     updatedAt: false,
 });
 
-module.exports = RoleSchema;
+module.exports = FormTypeSchema;

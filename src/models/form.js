@@ -1,30 +1,39 @@
 const {DataTypes, Sequelize} = require('sequelize');
 
-const StakeholderSchema = (sequlize, type) => sequlize.define('Stakeholder', {
+const FormSchema = (sequlize, type) => sequlize.define('Form', {
     Id: {
         type: type.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,
     },
-    Fullname: {
+    FormTypeId: {
+        type: type.INTEGER,
+        allowNull: false
+    },
+    UniqueKey: {
         type: type.STRING,
         allowNull: false
     },
-    Title: {
-        type: type.STRING,
+    InsertedDate: {
+        type: type.DATE,
         allowNull: true
     },
-    Email: {
+    InsertedUser: {
         type: type.STRING,
         allowNull: false
     },
-    IsDeleted: {
+    IsApproved: {
         type: type.BOOLEAN,
         allowNull: false,
         defaultValue: false,
     },
-    IsConfirmed: {
+    IsEditable: {
+        type: type.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+    },
+    IsDeleted: {
         type: type.BOOLEAN,
         allowNull: false,
         defaultValue: false,
@@ -35,4 +44,4 @@ const StakeholderSchema = (sequlize, type) => sequlize.define('Stakeholder', {
     updatedAt: false,
 });
 
-module.exports = StakeholderSchema;
+module.exports = FormSchema;

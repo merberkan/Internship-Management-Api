@@ -35,13 +35,6 @@ const handler = async (req, res) => {
         message: "Success",
         ok: true,
         data: {
-            columns: [
-                {field: 'id', hide:true},
-                {field: 'schoolId', headerName: 'School Id', width: 110},
-                {field: 'fullName', headerName: 'Full Name', width: 180},
-                {field: 'email', headerName: 'Email', width: 180},
-                {field: 'role', headerName: 'Role', width: 180},
-            ],
             rows:users
         },
       });

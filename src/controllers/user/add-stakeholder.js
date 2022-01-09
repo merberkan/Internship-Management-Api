@@ -42,7 +42,7 @@ const register = async (req, res) => {
       });
       //* Creates a new Stakeholder
       const stakeholderResult = await Stakeholder.create({
-        Fullname: model.name + " "+ model.surname,
+        Fullname: model.name + " " + model.surname,
         Email: model.email,
       });
       // console.log("after stakeholder creation");
@@ -130,8 +130,25 @@ const register = async (req, res) => {
   }
 };
 
+// const model = {
+//   uniqueKey: key,
+//   password: password,
+//   passwordApprove: passwordConfirm,
+//   jobTitle,
+//   companyName,
+//   companyAddress,
+//   companySector,
+//   companyPhone,
+//   companyFax,
+//   companyEmail,
+//   companyWebsite,
+//   companyEmployeeNumber,
+//   companyControl,
+// };
+
 const registerComplete = async (req, res) => {
-  const { User, Stakeholder } = await connectToDatabase();
+  const { User, Stakeholder, Company, StakeholderCompany } =
+    await connectToDatabase();
   const model = req.body;
   //* Checks if the user exist
   if (model.password !== model.passwordApprove) {
@@ -151,10 +168,46 @@ const registerComplete = async (req, res) => {
       { Password: md5(model.password) },
       { where: { Id: isExist.Id } }
     );
+    const stakeholderResult = await Stakeholder.findOne({
+      where: { Email: isExist.Email, IsDeleted: false },
+    });
     await Stakeholder.update(
       { IsConfirmed: true },
       { where: { Email: isExist.Email } }
     );
+    if (model.companyControl) {
+      const stakeholderCompany = await Company.findOne({
+        where: { Name: model.companyName, IsDeleted: false },
+      });
+      if (stakeholderCompany) {
+        const stakeholderCompanyResult = await StakeholderCompany.create({
+          CompanyId: stakeholderCompany.dataValues.Id,
+          StakeholderId: stakeholderResult.dataValues.Id,
+        });
+      } else {
+        //! Error
+        res.status(400).send({
+          message: "[REGISTER COMPLETE STAKEHOLDER ERROR]",
+          data: { error: "company not found!", ok: false },
+        });
+      }
+    } else {
+      const companyResult = await Company.create({
+        UniqueKey: uuid(),
+        Name: model.companyName,
+        Address: model.companyAddress,
+        Sector: model.companySector,
+        PhoneNo: model.companyPhone,
+        FaxNo: model.companyFax,
+        Email: model.companyEmail,
+        WebAddress: model.companyWebsite,
+        CompanyEmployeeNo: model.companyEmployeeNumber,
+      });
+      const stakeholderCompanyResult = await StakeholderCompany.create({
+        CompanyId: companyResult.dataValues.Id,
+        StakeholderId: stakeholderResult.dataValues.Id,
+      });
+    }
     //* Return success result
     res.status(200).send({
       message: "Password approved",
@@ -216,25 +269,54 @@ const list = async (req, res) => {
 
     const stakeholders = await Stakeholder.findAll({
       where: { IsDeleted: false, IsConfirmed: true },
-      attributes: ["Fullname", "Email"],
+      attributes: ["Fullname","Title", "Email"],
       include: [
         {
           model: StakeholderCompany,
           include: {
             model: Company,
-            attributes: ["Name"],
+            attributes: [
+              "Name",
+              "Address",
+              "Sector",
+              "PhoneNo",
+              "FaxNo",
+              "Email",
+              "WebAddress",
+              "CompanyEmployeeNo",
+            ],
           },
         },
       ],
     }).map((t) => {
-      console.log("bak buraya:",t.dataValues)
+      console.log("bak buraya:", t.dataValues);
       const fullname = t.dataValues.Fullname;
-      const companyName = t.dataValues.StakeholderCompanies.length > 0 ? t.dataValues.StakeholderCompanies[0].dataValues.Company.Name:"";
+      const title = t.dataValues.Title;
+      const email = t.dataValues.Email;
+      const companyName =t.dataValues.StakeholderCompanies[0].dataValues.Company.Name
+      const companyAddress =t.dataValues.StakeholderCompanies[0].dataValues.Company.Address;
+      const companySector =t.dataValues.StakeholderCompanies[0].dataValues.Company.Sector;
+      const companyPhoneNo =t.dataValues.StakeholderCompanies[0].dataValues.Company.PhoneNo;
+      const companyFaxNo =t.dataValues.StakeholderCompanies[0].dataValues.Company.FaxNo;
+      const companyEmail =t.dataValues.StakeholderCompanies[0].dataValues.Company.Email;
+      const companyWebAddress =t.dataValues.StakeholderCompanies[0].dataValues.Company.WebAddress;
+      const companyCompanyEmployeeNo =t.dataValues.StakeholderCompanies[0].dataValues.Company.CompanyEmployeeNo;
       const response = companyName + " (" + fullname + ")";
 
       return {
         fullname: response,
         email: t.dataValues.Email,
+        companyName,
+        companyAddress,
+        companySector,
+        companyPhoneNo,
+        companyFaxNo,
+        companyEmail,
+        companyWebAddress,
+        companyCompanyEmployeeNo,
+        companyEmployeeName: fullname,
+        title,
+        email
       };
     });
     res.status(200).send({

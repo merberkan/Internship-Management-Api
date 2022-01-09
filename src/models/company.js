@@ -15,6 +15,34 @@ const CompanySchema = (sequlize, type) => sequlize.define('Company', {
         type: type.STRING,
         allowNull: false
     },
+    Address: {
+        type: type.STRING,
+        allowNull: false
+    },
+    Sector: {
+        type: type.STRING,
+        allowNull: false
+    },
+    PhoneNo: {
+        type: type.STRING,
+        allowNull: false
+    },
+    FaxNo: {
+        type: type.STRING,
+        allowNull: false
+    },
+    Email: {
+        type: type.STRING,
+        allowNull: false
+    },
+    WebAddress: {
+        type: type.STRING,
+        allowNull: false
+    },
+    CompanyEmployeeNo: {
+        type: type.STRING,
+        allowNull: false
+    },
     IsDeleted: {
         type: type.BOOLEAN,
         allowNull: false,

@@ -9,6 +9,7 @@ const deleteUserController = require('../controllers/user/admin-delete-user');
 const addStakeholderController = require('../controllers/user/add-stakeholder');
 const UserListController = require('../controllers/user/user-list');
 const FormAddController = require('../controllers/forms/form-add');
+const CompanyController = require('../controllers/company/company');
 
 
 let routes = (app) => {
@@ -24,6 +25,8 @@ let routes = (app) => {
     router.get("/stakeholder/list/:usercode", addStakeholderController.list);
     router.put("/stakeholder/update/:usercode", addStakeholderController.update);
     router.post("/form", FormAddController.handler);
+    router.get("/company", CompanyController.list);
+
 
 
 

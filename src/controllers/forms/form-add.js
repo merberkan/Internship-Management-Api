@@ -20,24 +20,72 @@ const handler = async (req, res) => {
       ok: false,
     });
   } else {
-    const isStakeholderExist = await UserStakeholder.findOne({
-      where: { UserId: isUserExist.Id },
-      include: {
-        model: Stakeholder,
-        attributes: ['Email']
-      }
-    });
-    if (!isStakeholderExist) {
-      res.status(400).send({
-        message: "First, create and connect stakeholder",
-        ok: false,
+    if(model.formType === 1 || model.formType === 2){
+      const isStakeholderExist = await Stakeholder.findOne({
+        where: { Email: model.companyPersonMail },
       });
-    } else {
+      if (!isStakeholderExist) {
+        res.status(400).send({
+          message: "Stakeholder Not Found",
+          ok: false,
+        });
+      } else {
+        const newFormResult = await Form.create({
+          Name: model.studentName+model.studentSurname+"_"+model.formType,
+          FormTypeId: model.formType,
+          UniqueKey: uuid(),
+          InsertedDate: moment().utc(),
+          InsertedUser: isUserExist.Id,
+          DepartmentId: isUserExist.DepartmentId
+        });
+        const newUserFormResult = await UserForm.create({
+          UniqueKey: uuid(),
+          StudentId: isUserExist.Id,
+          FormId: newFormResult.dataValues.Id,
+          Value: JSON.stringify(model),
+          SendedEmail: model.companyPersonMail
+        });
+          //* Send email to Stakeholder to approve form
+          const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "snolldestek@gmail.com",
+              pass: "snoll123",
+            },
+            tls: {
+              rejectUnauthorized: false,
+            },
+          });
+          //* Create the mail body
+          var mailOptions = {
+            from: "snolldestek@gmail.com",
+            to: isStakeholderExist.Email,
+            subject: `${isUserExist.Name}  ${isUserExist.Surname} Staj Evrağı`,
+            text:
+              "Kurumunuzda staj yapacak öğrencimize ait formu doldurmak için http://localhost:3000/login adresinden giriş yapıp, belgelerim başlığı altından erişebilirsiniz."
+          };
+          //* Sends email
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("Email sent: " + info.response);
+            }
+          });
+  
+        res.status(200).send({
+          message: "Form Created Successfully",
+          ok: true,
+        });
+      }
+    }else{
       const newFormResult = await Form.create({
+        Name: model.studentName+model.studentSurname+"_"+model.formType,
         FormTypeId: model.formType,
         UniqueKey: uuid(),
         InsertedDate: moment().utc(),
         InsertedUser: isUserExist.Id,
+        DepartmentId: isUserExist.DepartmentId
       });
       const newUserFormResult = await UserForm.create({
         UniqueKey: uuid(),
@@ -45,37 +93,6 @@ const handler = async (req, res) => {
         FormId: newFormResult.dataValues.Id,
         Value: JSON.stringify(model),
       });
-      if (model.formType == 1 || model.formType == 2) {
-        //* Send email to Stakeholder to approve form
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: "snolldestek@gmail.com",
-            pass: "snoll123",
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        });
-        //* Create the mail body
-        var mailOptions = {
-          from: "snolldestek@gmail.com",
-          to: isStakeholderExist.Stakeholder.Email,
-          subject: `${isUserExist.Name}  ${isUserExist.Surname} Staj Evrağı`,
-          text:
-            "Kurumunuzda staj yapacak öğrencimize ait formu doldurmak için http://localhost:3000/student-forms/" +
-            newUserFormResult.dataValues.UniqueKey +" adresine tıklayınız."
-        };
-        //* Sends email
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-          }
-        });
-      }
-
       res.status(200).send({
         message: "Form Created Successfully",
         ok: true,

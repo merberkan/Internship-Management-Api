@@ -15,6 +15,14 @@ const FormSchema = (sequlize, type) => sequlize.define('Form', {
         type: type.STRING,
         allowNull: false
     },
+    Name: {
+        type: type.STRING,
+        allowNull: false
+    },
+    DepartmentId: {
+        type: type.INTEGER,
+        allowNull: true
+    },
     InsertedDate: {
         type: type.DATE,
         allowNull: true

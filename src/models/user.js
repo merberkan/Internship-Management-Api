@@ -36,6 +36,10 @@ const UserSchema = (sequlize, type) => sequlize.define('User', {
         allowNull: false,
         defaultValue: false,
     },
+    DepartmentId: {
+        type: type.INTEGER,
+        allowNull: true
+    },
 },{
     createdAt:false,
     freezeTableName: true,

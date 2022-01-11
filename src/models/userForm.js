@@ -48,7 +48,11 @@ const UserFormSchema = (sequlize, type) => sequlize.define('UserForm', {
     Value:{
         type: type.STRING,
         allowNull: false,
-    }
+    },
+    SendedEmail:{
+        type: type.STRING,
+        allowNull: true,
+    },
 },{
     createdAt:false,
     freezeTableName: true,

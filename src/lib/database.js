@@ -9,6 +9,7 @@ const UserStakeholderModel = require('../models/userStakeholder');
 const FormModel = require('../models/Form');
 const FormTypeModel = require('../models/formType');
 const UserFormModel = require('../models/userForm');
+const DepartmentModel = require('../models/department');
 
 // const {
 //     SQL_HOST,
@@ -59,7 +60,7 @@ const UserStakeholder = UserStakeholderModel(sequelize,Sequelize);
 const Form = FormModel(sequelize,Sequelize);
 const FormType = FormTypeModel(sequelize,Sequelize);
 const UserForm = UserFormModel(sequelize,Sequelize);
-
+const Department = DepartmentModel(sequelize,Sequelize);
 
 const Models = {
     User,
@@ -71,7 +72,8 @@ const Models = {
     UserStakeholder,
     Form,
     FormType,
-    UserForm
+    UserForm,
+    Department
 };
 
 const connection = {};
@@ -129,7 +131,8 @@ module.exports = async(includeSequelize) => {
     Models.User.hasMany(Models.UserForm, {foreignKey: 'GraderId'});
     Models.UserForm.belongsTo(Models.User,{foreignKey: 'GraderId'});
 
-
+    Models.User.hasMany(Models.Department, {foreignKey: 'DepartmentId'});
+    Models.Department.belongsTo(Models.User,{foreignKey: 'DepartmentId'});
 
 
     // End of PK FK define parts

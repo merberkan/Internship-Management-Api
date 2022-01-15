@@ -28,7 +28,7 @@ const upload = async (req, res) => {
         data.push({
           name: row[0],
           surname: row[1],
-          schoolId: row[2].toString(),
+          schoolId: row[2] ? row[2].toString(): '',
           password: row[3].toString(),
           email: row[4],
           roleId: row[5].toString(),

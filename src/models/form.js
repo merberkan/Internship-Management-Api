@@ -15,6 +15,14 @@ const FormSchema = (sequlize, type) => sequlize.define('Form', {
         type: type.STRING,
         allowNull: false
     },
+    Name: {
+        type: type.STRING,
+        allowNull: false
+    },
+    DepartmentId: {
+        type: type.INTEGER,
+        allowNull: true
+    },
     InsertedDate: {
         type: type.DATE,
         allowNull: true
@@ -34,6 +42,11 @@ const FormSchema = (sequlize, type) => sequlize.define('Form', {
         defaultValue: true,
     },
     IsDeleted: {
+        type: type.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    IsRejected: {
         type: type.BOOLEAN,
         allowNull: false,
         defaultValue: false,

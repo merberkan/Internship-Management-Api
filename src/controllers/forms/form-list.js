@@ -84,7 +84,7 @@ const handler = async (req, res) => {
         model: Form,
         include: {
           model: FormType,
-          attributes: ["Name"],
+          attributes: ["Name","Id"],
           required: true,
         },
         where: {
@@ -104,6 +104,7 @@ const handler = async (req, res) => {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
+        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
       };
     });
@@ -113,7 +114,7 @@ const handler = async (req, res) => {
         model: Form,
         include: {
           model: FormType,
-          attributes: ["Name"],
+          attributes: ["Name","Id"],
           required: true,
         },
         where: {
@@ -134,6 +135,7 @@ const handler = async (req, res) => {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
+        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
       };
     });
@@ -151,7 +153,7 @@ const handler = async (req, res) => {
         model: Form,
         include: {
           model: FormType,
-          attributes: ["Name"],
+          attributes: ["Name","Id"],
           required: true,
         },
         where: {
@@ -171,6 +173,7 @@ const handler = async (req, res) => {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
+        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
       };
     });

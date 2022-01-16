@@ -11,6 +11,8 @@ const UserListController = require('../controllers/user/user-list');
 const FormAddController = require('../controllers/forms/form-add');
 const CompanyController = require('../controllers/company/company');
 const FormsController = require('../controllers/forms/form-list');
+const FormsDetailController = require('../controllers/forms/form-detail');
+const FormsStatusController = require('../controllers/forms/forms-change-status');
 
 
 let routes = (app) => {
@@ -28,6 +30,8 @@ let routes = (app) => {
     router.post("/form", FormAddController.handler);
     router.get("/company", CompanyController.list);
     router.get("/forms/:usercode", FormsController.handler);
+    router.get("/user/form/:uniquekey",FormsDetailController.handler)
+    router.put("/form-status", FormsStatusController.handler);
 
 
 

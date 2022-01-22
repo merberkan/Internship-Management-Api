@@ -14,32 +14,32 @@ const UserFormSchema = (sequlize, type) => sequlize.define('UserForm', {
     StudentId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     HeadId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     DeanId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     CoordinatorId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     StakeholderId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     GraderId: {
         type: type.STRING,
         allowNull: true,
-        defaultValue: ''
+        defaultValue: null
     },
     FormId: {
         type: type.INTEGER,

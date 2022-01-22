@@ -20,6 +20,7 @@
     "node-excel-export": "^1.4.4",
     "nodemailer": "^6.4.17",
     "parse-multipart": "^1.0.4",
+    "pdf-to-base64": "^1.0.3",
     "read-excel-file": "^5.2.10",
     "sequelize": "^5.21.7",
     "uuid": "^8.3.2",

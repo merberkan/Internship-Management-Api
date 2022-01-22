@@ -7,7 +7,7 @@ const md5 = require('md5');
 const connectToDatabase = require("../../lib/database");
 
 const handler = async (req,res) => {
-    const { User, UserRole } = await connectToDatabase();
+    const { User, UserRole, Department } = await connectToDatabase();
     const model = req.body;
     console.log("gelen body:",model)
     const user = await User.findOne({ where: { Email: model.email, IsDeleted: false } });
@@ -28,12 +28,25 @@ const handler = async (req,res) => {
         where: {UserId: user.Id},
         attributes: ['RoleId']
     });
+    let userDepartment = null;
+    if(userRole.RoleId != 6){
+        userDepartment = await Department.findOne({
+            where: {Id: user.DepartmentId},
+            attributes: ['Name']
+        });
+    }
+
 
     const claims = {
         usercode: user.UniqueKey,
-        fullName: user.Name + user.Surname,
+        fullName: user.Name +" "+ user.Surname,
         email: user.Email,
-        role: userRole.RoleId
+        role: userRole.RoleId,
+        studentNo: user.SchoolId,
+        citizenshipNo: user.CitizenshipNo,
+        address: user.Address,
+        department: userDepartment ? userDepartment.Name:null,
+        phone: user.Phone
     }
     const token = sign(claims, 'shhhhh');
     res.status(200).send({

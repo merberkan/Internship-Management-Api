@@ -31,12 +31,13 @@ const handler = async (req, res) => {
         });
       } else {
         const newFormResult = await Form.create({
-          Name: model.studentName+model.studentSurname+"_"+model.formType,
+          Name: model.fullName+"-"+model.formType,
           FormTypeId: model.formType,
           UniqueKey: uuid(),
           InsertedDate: moment().utc(),
           InsertedUser: isUserExist.Id,
-          DepartmentId: isUserExist.DepartmentId
+          DepartmentId: isUserExist.DepartmentId,
+          LessonCode: model.lessonCode
         });
         const newUserFormResult = await UserForm.create({
           UniqueKey: uuid(),
@@ -80,17 +81,19 @@ const handler = async (req, res) => {
       }
     }else{
       const newFormResult = await Form.create({
-        Name: model.studentName+model.studentSurname+"_"+model.formType,
+        Name: model.fullName+"-"+model.formType,
         FormTypeId: model.formType,
         UniqueKey: uuid(),
         InsertedDate: moment().utc(),
         InsertedUser: isUserExist.Id,
-        DepartmentId: isUserExist.DepartmentId
+        DepartmentId: isUserExist.DepartmentId,
+        LessonCode: model.lessonCode
       });
       const newUserFormResult = await UserForm.create({
         UniqueKey: uuid(),
         StudentId: isUserExist.Id,
         FormId: newFormResult.dataValues.Id,
+        StakeholderId: "pass",
         Value: JSON.stringify(model),
       });
       res.status(200).send({

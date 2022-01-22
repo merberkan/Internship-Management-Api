@@ -51,6 +51,15 @@ const FormSchema = (sequlize, type) => sequlize.define('Form', {
         allowNull: false,
         defaultValue: false,
     },
+    LessonCode: {
+        type: type.STRING,
+        allowNull: false
+    },
+    RejectReason:{
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    }
 },{
     createdAt:false,
     freezeTableName: true,

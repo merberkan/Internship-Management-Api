@@ -13,6 +13,8 @@ const CompanyController = require('../controllers/company/company');
 const FormsController = require('../controllers/forms/form-list');
 const FormsDetailController = require('../controllers/forms/form-detail');
 const FormsStatusController = require('../controllers/forms/forms-change-status');
+const FormUpdateController = require('../controllers/forms/form-update');
+const ReportUploadController = require('../controllers/forms/report-upload');
 
 
 let routes = (app) => {
@@ -32,12 +34,8 @@ let routes = (app) => {
     router.get("/forms/:usercode", FormsController.handler);
     router.get("/user/form/:uniquekey",FormsDetailController.handler)
     router.put("/form-status", FormsStatusController.handler);
-
-
-
-
-    
-
+    router.put("/user/form-update/:uniquekey",FormUpdateController.handler)
+    router.post("/upload/report/:usercode", upload.single("file"), ReportUploadController.uploadPDFFile);
     app.use("/api", router);
 };
 

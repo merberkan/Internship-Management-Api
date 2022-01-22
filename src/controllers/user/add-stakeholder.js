@@ -269,7 +269,7 @@ const list = async (req, res) => {
 
     const stakeholders = await Stakeholder.findAll({
       where: { IsDeleted: false, IsConfirmed: true },
-      attributes: ["Fullname","Title", "Email"],
+      attributes: ["Id","Fullname","Title", "Email"],
       include: [
         {
           model: StakeholderCompany,
@@ -290,6 +290,7 @@ const list = async (req, res) => {
       ],
     }).map((t) => {
       console.log("bak buraya:", t.dataValues);
+      const id = t.dataValues.Id;
       const fullname = t.dataValues.Fullname;
       const title = t.dataValues.Title;
       const email = t.dataValues.Email;
@@ -304,6 +305,7 @@ const list = async (req, res) => {
       const response = companyName + " (" + fullname + ")";
 
       return {
+        id,
         fullname: response,
         email: t.dataValues.Email,
         companyName,

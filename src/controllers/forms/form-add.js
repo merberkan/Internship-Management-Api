@@ -93,6 +93,7 @@ const handler = async (req, res) => {
         UniqueKey: uuid(),
         StudentId: isUserExist.Id,
         FormId: newFormResult.dataValues.Id,
+        StakeholderId: "pass",
         Value: JSON.stringify(model),
       });
       res.status(200).send({

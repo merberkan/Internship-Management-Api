@@ -64,10 +64,19 @@ const handler = async (req, res) => {
           { GraderId: isUserExist.Id },
           { where: { Id: userForm.Id } }
         );
+        await Form.update(
+          { IsApproved: true },
+          { where: { UniqueKey: model.uniqueKey } }
+        );
+      }else if(roleId == 6){
+        await UserForm.update(
+          { StakeholderId: isUserExist.Id },
+          { where: { Id: userForm.Id } }
+        );
       }
     }else{
       await Form.update(
-        { IsRejected: true },
+        { IsRejected: true, RejectReason: model.rejectReason },
         { where: { UniqueKey: model.uniqueKey } }
       );
     }

@@ -89,6 +89,9 @@ const handler = async (req, res) => {
         },
         where: {
           IsApproved: false,
+          FormTypeId: {
+            [Op.not]: 5,
+          },
           IsRejected: {
             [Op.not]: true, // Like: sellDate IS NOT NULL
           },
@@ -110,6 +113,11 @@ const handler = async (req, res) => {
     });
   } else if (role == 3) {
     list = await UserForm.findAll({
+      where: {
+        StakeholderId: {
+          [Op.not]: null, // Like: StakeholderId IS NOT NULL
+        },
+      },
       include: {
         model: Form,
         include: {
@@ -120,8 +128,11 @@ const handler = async (req, res) => {
         where: {
           IsApproved: false,
           DepartmentId: userData.DepartmentId,
+          FormTypeId: {
+            [Op.not]: 5,
+          },
           IsRejected: {
-            [Op.not]: true, // Like: sellDate IS NOT NULL
+            [Op.not]: true,
           },
         },
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
@@ -159,6 +170,9 @@ const handler = async (req, res) => {
         },
         where: {
           IsApproved: false,
+          FormTypeId: {
+            [Op.not]: 5,
+          },
           IsRejected: {
             [Op.not]: true, // Like: sellDate IS NOT NULL
           },
@@ -179,6 +193,40 @@ const handler = async (req, res) => {
       };
     });
   } else if (role == 5) {
+    list = await UserForm.findAll({
+      where: {
+        StakeholderId: {
+          [Op.not]: null, // Like: StakeholderId IS NOT NULL
+        },
+      },
+      include: {
+        model: Form,
+        include: {
+          model: FormType,
+          attributes: ["Name","Id"],
+          required: true,
+        },
+        where: {
+          IsApproved: false,
+          DepartmentId: userData.DepartmentId,
+          FormTypeId: 5
+        },
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
+        required: true,
+      },
+      attributes: ["HeadId"],
+    }).map((t) => {
+      console.log(t.dataValues.Form.FormType.dataValues.Name);
+      console.log("-------------------------------------");
+      return {
+        id: t.dataValues.Form.dataValues.UniqueKey,
+        FormName: t.dataValues.Form.dataValues.Name,
+        LessonCode: t.dataValues.Form.dataValues.LessonCode,
+        FormType: t.dataValues.Form.FormType.dataValues.Name,
+        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
+        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+      };
+    });
   } else {
     list = await UserForm.findAll({
       where: {SendedEmail: userData.Email},

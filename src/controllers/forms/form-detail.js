@@ -3,6 +3,8 @@ const { userInfo } = require("../../lib/middleware");
 const moment = require("moment");
 const { uuid } = require("../../helpers/utils");
 var nodemailer = require("nodemailer");
+var fs = require("fs");
+
 
 const handler = async (req, res) => {
   const {
@@ -27,55 +29,116 @@ const handler = async (req, res) => {
       ok: false,
     });
   } else {
-    list = await UserForm.findAll({
-      include: {
-        model: Form,
+    if(user.role == 5 || user.role == 6){
+      list = await UserForm.findAll({
         include: {
-          model: FormType,
-          attributes: ["Name"],
+          model: Form,
+          include: {
+            model: FormType,
+            attributes: ["Name"],
+            required: true,
+          },
+          where: { UniqueKey: formUniqueKey },
+          attributes: ["FormTypeId","Name","IsRejected"],
           required: true,
         },
-        where: { UniqueKey: formUniqueKey },
-        attributes: ["Name","IsRejected"],
-        required: true,
-      },
-      attributes: [
-        "HeadId",
-        "DeanId",
-        "CoordinatorId",
-        "StakeholderId",
-        "GraderId",
-        "Value",
-      ],
-    }).map((t) => {
-      let confirmed = false;
-      if(user.role == 2 && t.dataValues.DeanId){
-        confirmed = true;
-      }else if(user.role == 3 && t.dataValues.HeadId){
-        confirmed = true;
-      }else if(user.role == 4 && t.dataValues.CoordinatorId){
-        confirmed = true;
-      }
-      return {
-        HeadId: t.dataValues.HeadId,
-        DeanId: t.dataValues.DeanId,
-        CoordinatorId: t.dataValues.CoordinatorId,
-        StakeholderId: t.dataValues.StakeholderId,
-        GraderId: t.dataValues.GraderId,
-        Value: JSON.parse(t.dataValues.Value),
-        FormName: t.dataValues.Form.dataValues.Name,
-        IsRejected: t.dataValues.Form.dataValues.IsRejected,
-        FormType: t.dataValues.Form.FormType.dataValues.Name,
-        IsConfirmed: confirmed
-      };
-    });
+        attributes: [
+          "HeadId",
+          "DeanId",
+          "CoordinatorId",
+          "StakeholderId",
+          "GraderId",
+          "Value",
+        ],
+      }).map((t) => {
+        let confirmed = false;
+        if(user.role == 5 && t.dataValues.GraderId){
+          confirmed = true;
+        }else if(user.role == 6 && t.dataValues.StakeholderId){
+          confirmed = true;
+        }
+        return {
+          HeadId: t.dataValues.HeadId,
+          DeanId: t.dataValues.DeanId,
+          CoordinatorId: t.dataValues.CoordinatorId,
+          StakeholderId: t.dataValues.StakeholderId,
+          GraderId: t.dataValues.GraderId,
+          Value: t.dataValues.Value,
+          FormName: t.dataValues.Form.dataValues.Name,
+          FormTypeId: t.dataValues.Form.dataValues.FormTypeId,
+          IsRejected: t.dataValues.Form.dataValues.IsRejected,
+          FormType: t.dataValues.Form.FormType.dataValues.Name,
+          IsConfirmed: confirmed
+        };
+      });
+    }else{
+      list = await UserForm.findAll({
+        include: {
+          model: Form,
+          include: {
+            model: FormType,
+            attributes: ["Name"],
+            required: true,
+          },
+          where: { UniqueKey: formUniqueKey },
+          attributes: ["FormTypeId","Name","IsRejected"],
+          required: true,
+        },
+        attributes: [
+          "HeadId",
+          "DeanId",
+          "CoordinatorId",
+          "StakeholderId",
+          "GraderId",
+          "Value",
+        ],
+      }).map((t) => {
+        let confirmed = false;
+        if(user.role == 2 && t.dataValues.DeanId){
+          confirmed = true;
+        }else if(user.role == 3 && t.dataValues.HeadId){
+          confirmed = true;
+        }else if(user.role == 4 && t.dataValues.CoordinatorId){
+          confirmed = true;
+        }else if(user.role == 5 && t.dataValues.GraderId){
+          confirmed = true;
+        }else if(user.role == 6 && t.dataValues.StakeholderId){
+          confirmed = true;
+        }
+        return {
+          HeadId: t.dataValues.HeadId,
+          DeanId: t.dataValues.DeanId,
+          CoordinatorId: t.dataValues.CoordinatorId,
+          StakeholderId: t.dataValues.StakeholderId,
+          GraderId: t.dataValues.GraderId,
+          Value: JSON.parse(t.dataValues.Value),
+          FormName: t.dataValues.Form.dataValues.Name,
+          FormTypeId: t.dataValues.Form.dataValues.FormTypeId,
+          IsRejected: t.dataValues.Form.dataValues.IsRejected,
+          FormType: t.dataValues.Form.FormType.dataValues.Name,
+          IsConfirmed: confirmed
+        };
+      });
+    }
+    
   }
   res.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.status(200).send({
-    message: "Form Detail Responsed Successfully",
-    ok: true,
-    list,
-  });
+  if(list[0].FormTypeId == 5){
+    var data =fs.readFileSync(list[0].Value);
+    res.contentType("application/pdf");
+    res.send({
+      message: "Form Detail Responsed Successfully",
+      ok: true,
+      pdf:data,
+      list
+    });
+  }else{
+    res.status(200).send({
+      message: "Form Detail Responsed Successfully",
+      ok: true,
+      list,
+    });
+  }
 };
 
 module.exports = {

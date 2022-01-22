@@ -15,6 +15,7 @@ const handler = async (req, res) => {
     FormType,
   } = await connectToDatabase();
   const user = await userInfo(req, res);
+  console.log("user Info:",user)
   const formUniqueKey = req.params.uniquekey;
   let list;
   const isUserExist = await User.findOne({
@@ -35,7 +36,7 @@ const handler = async (req, res) => {
           required: true,
         },
         where: { UniqueKey: formUniqueKey },
-        attributes: ["Name"],
+        attributes: ["Name","IsRejected"],
         required: true,
       },
       attributes: [
@@ -47,6 +48,14 @@ const handler = async (req, res) => {
         "Value",
       ],
     }).map((t) => {
+      let confirmed = false;
+      if(user.role == 2 && t.dataValues.DeanId){
+        confirmed = true;
+      }else if(user.role == 3 && t.dataValues.HeadId){
+        confirmed = true;
+      }else if(user.role == 4 && t.dataValues.CoordinatorId){
+        confirmed = true;
+      }
       return {
         HeadId: t.dataValues.HeadId,
         DeanId: t.dataValues.DeanId,
@@ -55,7 +64,9 @@ const handler = async (req, res) => {
         GraderId: t.dataValues.GraderId,
         Value: JSON.parse(t.dataValues.Value),
         FormName: t.dataValues.Form.dataValues.Name,
+        IsRejected: t.dataValues.Form.dataValues.IsRejected,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
+        IsConfirmed: confirmed
       };
     });
   }

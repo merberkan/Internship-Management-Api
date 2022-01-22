@@ -40,6 +40,21 @@ const UserSchema = (sequlize, type) => sequlize.define('User', {
         type: type.INTEGER,
         allowNull: true
     },
+    CitizenshipNo: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
+    Address: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
+    Phone: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
 },{
     createdAt:false,
     freezeTableName: true,

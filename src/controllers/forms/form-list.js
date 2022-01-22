@@ -124,7 +124,7 @@ const handler = async (req, res) => {
             [Op.not]: true, // Like: sellDate IS NOT NULL
           },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
         required: true,
       },
       attributes: ["HeadId"],
@@ -134,6 +134,7 @@ const handler = async (req, res) => {
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
+        LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
         FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
@@ -180,37 +181,34 @@ const handler = async (req, res) => {
   } else if (role == 5) {
   } else {
     list = await UserForm.findAll({
-      where: { StudentId: userData.Id },
+      where: {SendedEmail: userData.Email},
       include: {
         model: Form,
         include: {
           model: FormType,
-          attributes: ["Name"],
+          attributes: ["Name","Id"],
           required: true,
         },
-        attributes: ["Name"],
+        where: {
+          IsApproved: false,
+          IsRejected: {
+            [Op.not]: true, // Like: sellDate IS NOT NULL
+          },
+        },
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
         required: true,
       },
-      attributes: [
-        "HeadId",
-        "DeanId",
-        "CoordinatorId",
-        "StakeholderId",
-        "GraderId",
-        "Value",
-      ],
+      attributes: ["HeadId"],
     }).map((t) => {
       console.log(t.dataValues.Form.FormType.dataValues.Name);
       console.log("-------------------------------------");
       return {
-        HeadId: t.dataValues.HeadId,
-        DeanId: t.dataValues.DeanId,
-        CoordinatorId: t.dataValues.CoordinatorId,
-        StakeholderId: t.dataValues.StakeholderId,
-        GraderId: t.dataValues.GraderId,
-        Value: JSON.parse(t.dataValues.Value),
+        id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
+        LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
+        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
+        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
       };
     });
   }

@@ -25,19 +25,19 @@ const handler = async (req, res) => {
         // Responds to client
         res.status(200).send({
           message: "User role changed successfully",
-          data: { isSuccess: true },
+          data: { ok: true },
         });
       } catch (error) {
         console.log(error);
         res.status(400).send({
           message: "User role cannot changed!",
-          data: { isSuccess: false },
+          data: { ok: false },
         });
       }
     }else{
         res.status(400).send({
             message: "User cannot found!",
-            data: { isSuccess: false },
+            data: { ok: false },
           });
     }
 };

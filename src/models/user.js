@@ -55,6 +55,11 @@ const UserSchema = (sequlize, type) => sequlize.define('User', {
         allowNull: true,
         defaultValue: null
     },
+    BirthDate: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
 },{
     createdAt:false,
     freezeTableName: true,

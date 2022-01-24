@@ -78,19 +78,19 @@ const handler = async (req, res) => {
       // Responds to client
       res.status(200).send({
         message: "User deleted successfully",
-        data: { isSuccess: true, ok: true },
+        data: { ok: true, ok: true },
       });
     } catch (error) {
       console.log(error);
       res.status(400).send({
         message: "User could not deleted!",
-        data: { isSuccess: false },
+        data: { ok: false },
       });
     }
   } else {
     res.status(400).send({
       message: "User cannot found!",
-      data: { isSuccess: false },
+      data: { ok: false },
     });
   }
 };

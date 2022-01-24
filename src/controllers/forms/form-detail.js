@@ -4,6 +4,7 @@ const moment = require("moment");
 const { uuid } = require("../../helpers/utils");
 var nodemailer = require("nodemailer");
 var fs = require("fs");
+const { utc } = require("moment");
 
 
 const handler = async (req, res) => {
@@ -43,6 +44,7 @@ const handler = async (req, res) => {
           required: true,
         },
         attributes: [
+          "Id",
           "HeadId",
           "DeanId",
           "CoordinatorId",
@@ -57,6 +59,8 @@ const handler = async (req, res) => {
         }else if(user.role == 6 && t.dataValues.StakeholderId){
           confirmed = true;
         }
+        t.dataValues.Value = JSON.parse(t.dataValues.Value);
+        t.dataValues.Value.companyPersonDate = moment().utc().format("DD/MM/YYYY")
         return {
           HeadId: t.dataValues.HeadId,
           DeanId: t.dataValues.DeanId,
@@ -68,9 +72,15 @@ const handler = async (req, res) => {
           FormTypeId: t.dataValues.Form.dataValues.FormTypeId,
           IsRejected: t.dataValues.Form.dataValues.IsRejected,
           FormType: t.dataValues.Form.FormType.dataValues.Name,
-          IsConfirmed: confirmed
+          IsConfirmed: confirmed,
+          UserFormId: t.dataValues.Id
         };
       });
+      await UserForm.update(
+        { Value: JSON.stringify(list[0].Value) },
+        { where: { Id: list[0].UserFormId } }
+      );
+      console.log("list:",list)
     }else{
       list = await UserForm.findAll({
         include: {

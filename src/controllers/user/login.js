@@ -36,7 +36,6 @@ const handler = async (req,res) => {
         });
     }
 
-
     const claims = {
         usercode: user.UniqueKey,
         fullName: user.Name +" "+ user.Surname,
@@ -46,7 +45,8 @@ const handler = async (req,res) => {
         citizenshipNo: user.CitizenshipNo,
         address: user.Address,
         department: userDepartment ? userDepartment.Name:null,
-        phone: user.Phone
+        phone: user.Phone,
+        birth: user.BirthDate
     }
     const token = sign(claims, 'shhhhh');
     res.status(200).send({

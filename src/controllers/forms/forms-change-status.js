@@ -59,6 +59,10 @@ const handler = async (req, res) => {
           { CoordinatorId: isUserExist.Id },
           { where: { Id: userForm.Id } }
         );
+        await Form.update(
+          { IsApproved: true },
+          { where: { UniqueKey: model.uniqueKey } }
+        );
       }else if(roleId == 5){
         await UserForm.update(
           { GraderId: isUserExist.Id },

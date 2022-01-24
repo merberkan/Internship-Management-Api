@@ -9,13 +9,13 @@ const handler = async (req,res) => {
         if(!userData){
           res.status(400).send({
             message: "User cannot found!",
-            data: { isSuccess: false },
+            data: { ok: false },
           });
         }
         const user = await User.findOne({ where: { UniqueKey: userData.usercode, IsDeleted:false } });
         if(user){
           res.status(200).send({
-            data: {isSuccess: true,user}
+            data: {ok: true,user}
         });
         }else{
           res.status(400).send({

@@ -172,7 +172,7 @@ const registerComplete = async (req, res) => {
       where: { Email: isExist.Email, IsDeleted: false },
     });
     await Stakeholder.update(
-      { IsConfirmed: true },
+      { IsConfirmed: true, Title: model.jobTitle },
       { where: { Email: isExist.Email } }
     );
     if (model.companyControl) {

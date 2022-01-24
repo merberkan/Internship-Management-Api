@@ -80,6 +80,7 @@ const upload = async (req, res) => {
     console.log(error);
     res.status(500).send({
       message: "Could not upload the file: " + req.file.originalname,
+      ok:false
     });
   }
 };

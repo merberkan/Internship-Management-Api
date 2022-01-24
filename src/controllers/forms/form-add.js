@@ -30,8 +30,20 @@ const handler = async (req, res) => {
           ok: false,
         });
       } else {
+        console.log("studentInternStart:",model.studentInternStart);
+        const today = moment().utc();
+        const convertion = model.studentInternStart.split("/");
+        model.studentInternStart = `${convertion[1]}/${convertion[0]}/${convertion[2]}`
+        const internStartDate = moment(model.studentInternStart).utc();
+        const difference = moment.duration(internStartDate.diff(today)).asDays();
+        if(difference <=15){
+          res.status(400).send({
+            message: "Staj başlangıç tarihi ile bugün arasında 14 günden az fark olmamalı.",
+            ok: false,
+          });
+        }else{
         const newFormResult = await Form.create({
-          Name: model.fullName+"-"+model.formType,
+          Name: model.fullName,
           FormTypeId: model.formType,
           UniqueKey: uuid(),
           InsertedDate: moment().utc(),
@@ -78,10 +90,11 @@ const handler = async (req, res) => {
           message: "Form Created Successfully",
           ok: true,
         });
+        }
       }
     }else{
       const newFormResult = await Form.create({
-        Name: model.fullName+"-"+model.formType,
+        Name: model.fullName,
         FormTypeId: model.formType,
         UniqueKey: uuid(),
         InsertedDate: moment().utc(),

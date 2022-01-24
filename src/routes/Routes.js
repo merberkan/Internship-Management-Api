@@ -16,6 +16,7 @@ const FormsStatusController = require('../controllers/forms/forms-change-status'
 const FormUpdateController = require('../controllers/forms/form-update');
 const ReportUploadController = require('../controllers/forms/report-upload');
 const UserUpdateController = require('../controllers/user/user-update');
+const DownloadExcelController = require('../controllers/user/download-excel');
 
 
 let routes = (app) => {
@@ -38,6 +39,9 @@ let routes = (app) => {
     router.put("/user/form-update/:uniquekey",FormUpdateController.handler)
     router.post("/upload/report/:usercode", upload.single("file"), ReportUploadController.uploadPDFFile);
     router.put("/user/update", UserUpdateController.handler);
+    router.get("/download", DownloadExcelController.handler);
+
+
     app.use("/api", router);
 };
 

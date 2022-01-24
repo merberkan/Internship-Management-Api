@@ -85,6 +85,58 @@ const handler = async (req, res) => {
           { where: { Id: list[0].UserFormId } }
         );
       }
+    } else if (user.role == 1) {
+      list = await UserForm.findAll({
+        include: {
+          model: Form,
+          include: {
+            model: FormType,
+            attributes: ["Name"],
+            required: true,
+          },
+          where: { UniqueKey: formUniqueKey },
+          attributes: ["FormTypeId", "Name", "IsRejected"],
+          required: true,
+        },
+        attributes: [
+          "HeadId",
+          "DeanId",
+          "CoordinatorId",
+          "StakeholderId",
+          "GraderId",
+          "Value",
+        ],
+      }).map((t) => {
+        if(t.dataValues.Form.dataValues.FormTypeId == "5"){
+          return {
+            HeadId: t.dataValues.HeadId,
+            DeanId: t.dataValues.DeanId,
+            CoordinatorId: t.dataValues.CoordinatorId,
+            StakeholderId: t.dataValues.StakeholderId,
+            GraderId: t.dataValues.GraderId,
+            Value: t.dataValues.Value,
+            FormName: t.dataValues.Form.dataValues.Name,
+            FormTypeId: t.dataValues.Form.dataValues.FormTypeId,
+            IsRejected: t.dataValues.Form.dataValues.IsRejected,
+            FormType: t.dataValues.Form.FormType.dataValues.Name,
+            UserFormId: t.dataValues.Id,
+          };
+        }else{
+          return {
+            HeadId: t.dataValues.HeadId,
+            DeanId: t.dataValues.DeanId,
+            CoordinatorId: t.dataValues.CoordinatorId,
+            StakeholderId: t.dataValues.StakeholderId,
+            GraderId: t.dataValues.GraderId,
+            Value: JSON.parse(t.dataValues.Value),
+            FormName: t.dataValues.Form.dataValues.Name,
+            FormTypeId: t.dataValues.Form.dataValues.FormTypeId,
+            IsRejected: t.dataValues.Form.dataValues.IsRejected,
+            FormType: t.dataValues.Form.FormType.dataValues.Name,
+          };
+        }
+        
+      });
     } else {
       list = await UserForm.findAll({
         include: {

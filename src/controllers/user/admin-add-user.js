@@ -28,10 +28,15 @@ const upload = async (req, res) => {
         data.push({
           name: row[0],
           surname: row[1],
-          schoolId: row[2] ? row[2].toString(): '',
-          password: row[3].toString(),
+          schoolId: row[2] ? row[2].toString(): null,
+          password: row[3] ? row[3].toString():null,
           email: row[4],
           roleId: row[5].toString(),
+          departmentId: row[6] ? row[6].toString():null,
+          citizenshipNo: row[7] ? row[7].toString():null,
+          address: row[8] ? row[8].toString():null,
+          phone: row[9] ? row[9].toString():null,
+          birthDate: row[10] ? row[10].toString():null,
         });
       });
       // Deletes the file from given path
@@ -58,10 +63,15 @@ const upload = async (req, res) => {
             UniqueKey: uuid(),
             Name: tmp.name,
             Surname: tmp.surname,
-            SchoolId: tmp.schoolId,
-            Password: md5(tmp.password),
+            SchoolId: tmp.schoolId ? tmp.schoolId:null,
+            Password: tmp.password ? md5(tmp.password):md5(tmp.citizenshipNo),
             Email: tmp.email,
-            CompanyId: 1
+            CompanyId: 1,
+            DepartmentId: tmp.departmentId,
+            Address: tmp.address ? tmp.address:null,
+            Phone: tmp.phone?tmp.phone:null,
+            CitizenshipNo: tmp.citizenshipNo ? tmp.citizenshipNo:null, 
+            BirthDate: tmp.birthDate?tmp.birthDate:null
           });
           const userRoleResult = await UserRole.create({
             UserId: userResult.dataValues.Id,

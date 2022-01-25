@@ -60,10 +60,19 @@ const UserSchema = (sequlize, type) => sequlize.define('User', {
         allowNull: true,
         defaultValue: null
     },
+    PasswordKey: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
+    Faculty: {
+        type: type.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
 },{
     createdAt:false,
     freezeTableName: true,
     updatedAt: false,
 });
-
 module.exports = UserSchema;

@@ -30,13 +30,14 @@ const handler = async (req, res) => {
           ok: false,
         });
       } else {
-        console.log("studentInternStart:",model.studentInternStart);
         const today = moment().utc();
-        const convertion = model.studentInternStart.split("/");
-        model.studentInternStart = `${convertion[1]}/${convertion[0]}/${convertion[2]}`
         const internStartDate = moment(model.studentInternStart).utc();
+        const internEndDate = moment(model.studentInternEnd).utc();
         const difference = moment.duration(internStartDate.diff(today)).asDays();
-        if(difference <=15){
+        const difference2 = moment.duration(internEndDate.diff(today)).asDays();
+        const difference3 = moment.duration(internEndDate.diff(internStartDate)).asDays();
+        if(difference <=15 || difference2 <=16 || difference3 < 1){
+          console.log("if icine girdi")
           res.status(400).send({
             message: "Staj başlangıç tarihi ile bugün arasında 14 günden az fark olmamalı.",
             ok: false,

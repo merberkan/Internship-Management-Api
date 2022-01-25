@@ -16,7 +16,6 @@ const uploadPDFFile = async (req, res) => {
   const isUserExist = await User.findOne({
     where: { UniqueKey: user.usercode, IsDeleted: false },
   });
-  let base64OfFile;
   try {
     // Checks if file is exist
     if (req.file == undefined) {

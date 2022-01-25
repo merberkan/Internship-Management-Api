@@ -113,7 +113,7 @@ const handler = async (req, res) => {
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
         FormTypeId: formTypeId,
-        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
         FormStatus:formStatus,
         ApproveStatus: approveStatus,
         RejectReason: rejectReason
@@ -126,6 +126,7 @@ const handler = async (req, res) => {
         HeadId: {
           [Op.not]: null, // Like: HeadId IS NOT NULL
         },
+        DeanId: null,
       },
       include: {
         model: Form,
@@ -174,29 +175,78 @@ const handler = async (req, res) => {
           required: true,
         },
         where: {
-          IsApproved: false,
           DepartmentId: userData.DepartmentId,
           FormTypeId: {
             [Op.not]: 5,
           },
-          IsRejected: {
-            [Op.not]: true,
-          },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
       },
-      attributes: ["HeadId"],
+      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId"],
     }).map((t) => {
-      console.log(t.dataValues.Form.FormType.dataValues.Name);
-      console.log("-------------------------------------");
+      let formStatus="";
+      let stakeholder = t.dataValues.StakeholderId;
+      let dean = t.dataValues.DeanId;
+      let head = t.dataValues.HeadId;
+      let coordinator = t.dataValues.CoordinatorId;
+      let grader = t.dataValues.GraderId;
+      let formTypeId = t.dataValues.Form.FormType.dataValues.Id;
+      let approveStatus = "";
+      let rejectReason = "Onay Sürecinde"
+      if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
+        if(formTypeId == 1 || formTypeId == 2){
+          if(!stakeholder && !dean && !head && !coordinator){
+            formStatus = "Paydaş Onayı Bekleniyor";
+          }else if(stakeholder && !dean && !head && !coordinator){
+            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+          }else if(stakeholder && !dean && head && !coordinator){
+            formStatus = "Dekanlık Onayı Bekleniyor";
+          }else if(stakeholder && dean && head && !coordinator){
+            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+          }
+        }else if(formTypeId == 3 || formTypeId == 4){
+          if(!dean && !head && !coordinator){
+            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+          }else if(!dean && head && !coordinator){
+            formStatus = "Dekanlık Onayı Bekleniyor";
+          }else if(dean && head && !coordinator){
+            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+          }
+        }else{
+          if(!stakeholder && !grader){
+            formStatus = "Paydaş Onayı Bekleniyor";
+          }else if(stakeholder && !grader){
+            formStatus = "Asistan Onayı Bekleniyor";
+          }
+        }
+      }else if(t.dataValues.Form.dataValues.IsApproved){
+        formStatus= "Onaylandı"
+      }else{
+        formStatus = "Reddedildi"
+      }
+      if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
+        approveStatus = "Onay Sürecinde"
+        rejectReason = "Onay Sürecinde"
+      }else if(t.dataValues.Form.dataValues.IsApproved){
+        approveStatus = "Onaylandı"
+        rejectReason = "Onaylandı"
+      }else if(t.dataValues.Form.dataValues.IsRejected){
+        approveStatus = "Reddedildi"
+        rejectReason = t.dataValues.Form.dataValues.RejectReason
+      }
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
+        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Onaylandı":"Onay Sürecinde",
+        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Reddedildi":"Onay Sürecinde",
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
-        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
-        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+        FormTypeId: formTypeId,
+        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
+        FormStatus:formStatus,
+        ApproveStatus: approveStatus,
+        RejectReason: rejectReason
       };
     });
   } else if (role == 4) {
@@ -208,6 +258,7 @@ const handler = async (req, res) => {
         DeanId: {
           [Op.not]: null, // Like: DeanId IS NOT NULL
         },
+        CoordinatorId: null,
       },
       include: {
         model: Form,
@@ -256,24 +307,76 @@ const handler = async (req, res) => {
           required: true,
         },
         where: {
-          IsApproved: false,
           DepartmentId: userData.DepartmentId,
           FormTypeId: 5
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
       },
       attributes: ["HeadId"],
     }).map((t) => {
-      console.log(t.dataValues.Form.FormType.dataValues.Name);
-      console.log("-------------------------------------");
+      let formStatus="";
+      let stakeholder = t.dataValues.StakeholderId;
+      let dean = t.dataValues.DeanId;
+      let head = t.dataValues.HeadId;
+      let coordinator = t.dataValues.CoordinatorId;
+      let grader = t.dataValues.GraderId;
+      let formTypeId = t.dataValues.Form.FormType.dataValues.Id;
+      let approveStatus = "";
+      let rejectReason = "Onay Sürecinde"
+      if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
+        if(formTypeId == 1 || formTypeId == 2){
+          if(!stakeholder && !dean && !head && !coordinator){
+            formStatus = "Paydaş Onayı Bekleniyor";
+          }else if(stakeholder && !dean && !head && !coordinator){
+            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+          }else if(stakeholder && !dean && head && !coordinator){
+            formStatus = "Dekanlık Onayı Bekleniyor";
+          }else if(stakeholder && dean && head && !coordinator){
+            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+          }
+        }else if(formTypeId == 3 || formTypeId == 4){
+          if(!dean && !head && !coordinator){
+            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+          }else if(!dean && head && !coordinator){
+            formStatus = "Dekanlık Onayı Bekleniyor";
+          }else if(dean && head && !coordinator){
+            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+          }
+        }else{
+          if(!stakeholder && !grader){
+            formStatus = "Paydaş Onayı Bekleniyor";
+          }else if(stakeholder && !grader){
+            formStatus = "Asistan Onayı Bekleniyor";
+          }
+        }
+      }else if(t.dataValues.Form.dataValues.IsApproved){
+        formStatus= "Onaylandı"
+      }else{
+        formStatus = "Reddedildi"
+      }
+      if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
+        approveStatus = "Onay Sürecinde"
+        rejectReason = "Onay Sürecinde"
+      }else if(t.dataValues.Form.dataValues.IsApproved){
+        approveStatus = "Onaylandı"
+        rejectReason = "Onaylandı"
+      }else if(t.dataValues.Form.dataValues.IsRejected){
+        approveStatus = "Reddedildi"
+        rejectReason = t.dataValues.Form.dataValues.RejectReason
+      }
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
+        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Onaylandı":"Onay Sürecinde",
+        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Reddedildi":"Onay Sürecinde",
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
-        FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
-        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+        FormTypeId: formTypeId,
+        InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
+        FormStatus:formStatus,
+        ApproveStatus: approveStatus,
+        RejectReason: rejectReason
       };
     });
   } else {

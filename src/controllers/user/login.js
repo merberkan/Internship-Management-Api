@@ -46,7 +46,8 @@ const handler = async (req,res) => {
         address: user.Address,
         department: userDepartment ? userDepartment.Name:null,
         phone: user.Phone,
-        birth: user.BirthDate
+        birth: user.BirthDate,
+        faculty: user.Faculty
     }
     const token = sign(claims, 'shhhhh');
     res.status(200).send({

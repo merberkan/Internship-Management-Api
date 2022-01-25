@@ -17,6 +17,7 @@ const FormUpdateController = require('../controllers/forms/form-update');
 const ReportUploadController = require('../controllers/forms/report-upload');
 const UserUpdateController = require('../controllers/user/user-update');
 const DownloadExcelController = require('../controllers/user/download-excel');
+const ForgetPasswordController = require('../controllers/user/forget-password');
 
 
 let routes = (app) => {
@@ -24,6 +25,8 @@ let routes = (app) => {
     router.post("/upload", upload.single("file"), addUserController.upload);
     router.get("/user/detail", userController.handler);
     router.post("/login", loginController.handler);
+    router.post("/forget-password", ForgetPasswordController.handler);
+    router.put("/forget-password-approve", ForgetPasswordController.changePassword);
     router.put("/admin/edit-role", editRoleController.handler);
     router.put("/admin/delete-user", deleteUserController.handler);
     router.post("/user/add-stakeholder/:usercode", addStakeholderController.register);

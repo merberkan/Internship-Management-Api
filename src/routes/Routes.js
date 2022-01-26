@@ -42,6 +42,8 @@ let routes = (app) => {
     router.put("/user/form-update/:uniquekey",FormUpdateController.handler)
     router.post("/upload/report/:usercode", upload.single("file"), ReportUploadController.uploadPDFFile);
     router.put("/user/update", UserUpdateController.handler);
+    router.put("/company/update", CompanyController.update);
+    router.get("/company/detail/:uniquekey", CompanyController.detail);
     router.get("/download", DownloadExcelController.handler);
 
 

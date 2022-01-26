@@ -138,7 +138,7 @@ const handler = async (req, res) => {
         where: {
           IsApproved: false,
           FormTypeId: {
-            [Op.not]: 5,
+            [Op.notIn]: [5,6]
           },
           IsRejected: {
             [Op.not]: true, // Like: sellDate IS NOT NULL
@@ -177,8 +177,8 @@ const handler = async (req, res) => {
         where: {
           DepartmentId: userData.DepartmentId,
           FormTypeId: {
-            [Op.not]: 5,
-          },
+            [Op.notIn]: [5,6]
+          }
         },
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
@@ -258,7 +258,6 @@ const handler = async (req, res) => {
         DeanId: {
           [Op.not]: null, // Like: DeanId IS NOT NULL
         },
-        CoordinatorId: null,
       },
       include: {
         model: Form,
@@ -268,12 +267,8 @@ const handler = async (req, res) => {
           required: true,
         },
         where: {
-          IsApproved: false,
           FormTypeId: {
-            [Op.not]: 5,
-          },
-          IsRejected: {
-            [Op.not]: true, // Like: sellDate IS NOT NULL
+            [Op.notIn]: [5,6]
           },
         },
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
@@ -308,12 +303,14 @@ const handler = async (req, res) => {
         },
         where: {
           DepartmentId: userData.DepartmentId,
-          FormTypeId: 5
+          FormTypeId: {
+            [Op.notIn]: [1,2,3,4]
+          }
         },
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
       },
-      attributes: ["HeadId"],
+      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId"],
     }).map((t) => {
       let formStatus="";
       let stakeholder = t.dataValues.StakeholderId;

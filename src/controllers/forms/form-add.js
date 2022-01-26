@@ -20,7 +20,7 @@ const handler = async (req, res) => {
       ok: false,
     });
   } else {
-    if(model.formType === 1 || model.formType === 2){
+    if(model.formType === 1 || model.formType === 2 || model.formType ===6){
       const isStakeholderExist = await Stakeholder.findOne({
         where: { Email: model.companyPersonMail },
       });

@@ -3,6 +3,8 @@ const { userInfo } = require("../../lib/middleware");
 const moment = require("moment");
 const { uuid } = require("../../helpers/utils");
 var nodemailer = require("nodemailer");
+const Sequelize = require('sequelize');
+const {Op} = Sequelize;
 
 const handler = async (req, res) => {
   const {
@@ -16,7 +18,6 @@ const handler = async (req, res) => {
   } = await connectToDatabase();
   const user = await userInfo(req, res);
   const model = req.body;
-  console.log("model:", model);
   const isUserExist = await User.findOne({
     where: { UniqueKey: user.usercode, IsDeleted: false },
     include: {
@@ -24,6 +25,9 @@ const handler = async (req, res) => {
       attributes: ["RoleId"],
       required: true,
     },
+  });
+  const isStudentExist = await User.findOne({
+    where: {Email: model.studentEmail, IsDeleted: false}
   });
   if (!isUserExist) {
     res.status(400).send({
@@ -33,7 +37,33 @@ const handler = async (req, res) => {
   } else {
     const roleId = isUserExist.UserRoles[0].dataValues.RoleId;
     if(model.status == "1"){
-      const userForm = await UserForm.findOne({
+      const incomedForm = await Form.findOne({
+        where: {
+          UniqueKey: model.uniqueKey,
+        },
+      });
+      const userForms = [];
+      const forms = [];
+      const userForm = await UserForm.findAll({
+        include: {
+          model: Form,
+          where: {
+            LessonCode: incomedForm.LessonCode,
+            InsertedUser: isStudentExist.Id,
+            IsRejected: false
+          },
+          required: true,
+          attributes: ["Id","LessonCode"],
+        },
+        attributes: ["Id"],
+      }).map((t) => {
+        userForms.push({Id:t.Id});
+        forms.push({Id: t.Form.dataValues.Id})
+        return{
+          Id: t.Id
+        }
+      });
+      const userForm2 = await UserForm.findOne({
         include: {
           model: Form,
           where: {
@@ -43,30 +73,29 @@ const handler = async (req, res) => {
         },
         attributes: ["Id"],
       });
-      console.log("user form:",userForm.Id)
       if(roleId == 2){
         await UserForm.update(
           { DeanId: isUserExist.Id },
-          { where: { Id: userForm.Id } }
+          { where: { [Op.or]: userForms} }
         );
       }else if(roleId == 3){
         await UserForm.update(
           { HeadId: isUserExist.Id },
-          { where: { Id: userForm.Id } }
+          { where: { [Op.or]: userForms } }
         );
       }else if(roleId == 4){
         await UserForm.update(
           { CoordinatorId: isUserExist.Id },
-          { where: { Id: userForm.Id } }
+          { where: { [Op.or]: userForms } }
         );
         await Form.update(
           { IsApproved: true },
-          { where: { UniqueKey: model.uniqueKey } }
+          { where: { [Op.or]: forms } }
         );
       }else if(roleId == 5){
         await UserForm.update(
           { GraderId: isUserExist.Id },
-          { where: { Id: userForm.Id } }
+          { where: { Id: userForm2.Id } }
         );
         await Form.update(
           { IsApproved: true },
@@ -75,7 +104,7 @@ const handler = async (req, res) => {
       }else if(roleId == 6){
         await UserForm.update(
           { StakeholderId: isUserExist.Id },
-          { where: { Id: userForm.Id } }
+          { where: { Id: userForm2.Id } }
         );
       }
     }else{

@@ -1,3 +1,5 @@
 # Internship-Management
-Graduation Project
-Open terminal and write npm start
+# Graduation Project
+## First Of All
+#### `npm install`
+#### `npm start` to run project

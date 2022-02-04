@@ -26,9 +26,6 @@ const handler = async (req, res) => {
       required: true,
     },
   });
-  const isStudentExist = await User.findOne({
-    where: {Email: model.studentEmail, IsDeleted: false}
-  });
   if (!isUserExist) {
     res.status(400).send({
       message: "User Not Found",
@@ -36,7 +33,10 @@ const handler = async (req, res) => {
     });
   } else {
     const roleId = isUserExist.UserRoles[0].dataValues.RoleId;
-    if(model.status == "1"){
+    if(model.status == "1" && model.studentEmail){
+      const isStudentExist = await User.findOne({
+        where: {Email: model.studentEmail, IsDeleted: false}
+      });
       const incomedForm = await Form.findOne({
         where: {
           UniqueKey: model.uniqueKey,
@@ -107,6 +107,38 @@ const handler = async (req, res) => {
           { where: { Id: userForm2.Id } }
         );
       }
+    }else if(model.status == "1"){
+      const userForm2 = await UserForm.findOne({
+        include: {
+          model: Form,
+          where: {
+            UniqueKey: model.uniqueKey,
+          },
+          required: true,
+        },
+        attributes: ["Id"],
+      });
+
+      if(roleId == 5){
+        await UserForm.update(
+          { GraderId: isUserExist.Id },
+          { where: { Id: userForm2.Id } }
+        );
+        await Form.update(
+          { IsApproved: true },
+          { where: { UniqueKey: model.uniqueKey } }
+        );
+      }else if(roleId == 6){
+        await UserForm.update(
+          { StakeholderId: isUserExist.Id },
+          { where: { Id: userForm2.Id } }
+        );
+      }
+
+      await UserForm.update(
+        { StakeholderId: isUserExist.Id },
+        { where: { Id: userForm2.Id } }
+      );
     }else{
       await Form.update(
         { IsRejected: true, RejectReason: model.rejectReason },

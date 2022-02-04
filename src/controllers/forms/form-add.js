@@ -36,10 +36,20 @@ const handler = async (req, res) => {
         const difference = moment.duration(internStartDate.diff(today)).asDays();
         const difference2 = moment.duration(internEndDate.diff(today)).asDays();
         const difference3 = moment.duration(internEndDate.diff(internStartDate)).asDays();
-        if(difference <=15 || difference2 <=16 || difference3 < 1){
+        if(difference <=14){
           console.log("if icine girdi")
           res.status(400).send({
-            message: "Staj başlangıç tarihi ile bugün arasında 14 günden az fark olmamalı.",
+            message: "There should be a difference of at least 14 days between the internship start date and today.",
+            ok: false,
+          });
+        }else if(difference2 <=34){
+          res.status(400).send({
+            message: "There should be a minimum difference of 34 days between the internship end date and today's date",
+            ok: false,
+          });
+        } else if(difference3 <= 20){
+          res.status(400).send({
+            message: "You can't do an internship for less than 20 days.",
             ok: false,
           });
         }else{

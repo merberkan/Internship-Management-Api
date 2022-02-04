@@ -13,7 +13,8 @@ const UserSchema = (sequlize, type) => sequlize.define('User', {
     },
     SchoolId: {
         type: type.STRING,
-        allowNull: false
+        allowNull: true,
+        defaultValue: null
     },
     Name: {
         type: type.STRING,

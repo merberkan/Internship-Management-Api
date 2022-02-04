@@ -7,7 +7,8 @@ var nodemailer = require("nodemailer");
 const handler = async (req, res) => {
   const { User, UserRole, UserStakeholder, Stakeholder, Form, UserForm } =
     await connectToDatabase();
-  const user = await userInfo(req, res); //77db8955a80b4b16a3d76999a38d7c5a
+  console.log("testing")
+  const user = await userInfo(req, res); //77db8955a80b4b16a3d76999a38d7c5
   console.log("user:",user)
   const model = req.body;
   const formUniqueKey = req.params.uniquekey;
@@ -22,7 +23,7 @@ const handler = async (req, res) => {
   const userForm = await UserForm.findOne({
       where: {FormId: form.Id}
   });
-
+  console.log("istek geldi")
   await UserForm.update(
     { Value: JSON.stringify(model), StakeholderId: myStakeholder.Id },
     { where: { Id: userForm.Id } }

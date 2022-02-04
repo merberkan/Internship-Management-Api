@@ -63,53 +63,53 @@ const handler = async (req, res) => {
       let grader = t.dataValues.GraderId;
       let formTypeId = t.dataValues.Form.FormType.dataValues.Id;
       let approveStatus = "";
-      let rejectReason = "Onay Sürecinde"
+      let rejectReason = "In the Approval Process"
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
         if(formTypeId == 1 || formTypeId == 2){
           if(!stakeholder && !dean && !head && !coordinator){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(stakeholder && !dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(stakeholder && dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else if(formTypeId == 3 || formTypeId == 4){
           if(!dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(!dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else{
           if(!stakeholder && !grader){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !grader){
-            formStatus = "Asistan Onayı Bekleniyor";
+            formStatus = "Waiting for Grader Approval";
           }
         }
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        formStatus= "Onaylandı"
+        formStatus= "Approved"
       }else{
-        formStatus = "Reddedildi"
+        formStatus = "Rejected"
       }
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Onay Sürecinde"
-        rejectReason = "Onay Sürecinde"
+        approveStatus = "In the Approval Process"
+        rejectReason = "In the Approval Process"
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        approveStatus = "Onaylandı"
-        rejectReason = "Onaylandı"
+        approveStatus = "Approved"
+        rejectReason = "Approved"
       }else if(t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Reddedildi"
+        approveStatus = "Rejected"
         rejectReason = t.dataValues.Form.dataValues.RejectReason
       }
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
-        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Onaylandı":"Onay Sürecinde",
-        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Reddedildi":"Onay Sürecinde",
+        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Approved":"In the Approval Process",
+        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Rejected":"In the Approval Process",
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
         FormTypeId: formTypeId,
@@ -193,53 +193,53 @@ const handler = async (req, res) => {
       let grader = t.dataValues.GraderId;
       let formTypeId = t.dataValues.Form.FormType.dataValues.Id;
       let approveStatus = "";
-      let rejectReason = "Onay Sürecinde"
+      let rejectReason = "In the Approval Process"
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
         if(formTypeId == 1 || formTypeId == 2){
           if(!stakeholder && !dean && !head && !coordinator){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(stakeholder && !dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(stakeholder && dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else if(formTypeId == 3 || formTypeId == 4){
           if(!dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(!dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else{
           if(!stakeholder && !grader){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !grader){
-            formStatus = "Asistan Onayı Bekleniyor";
+            formStatus = "Waiting for Grader Approval";
           }
         }
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        formStatus= "Onaylandı"
+        formStatus= "Approved"
       }else{
-        formStatus = "Reddedildi"
+        formStatus = "Rejected"
       }
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Onay Sürecinde"
-        rejectReason = "Onay Sürecinde"
+        approveStatus = "In the Approval Process"
+        rejectReason = "In the Approval Process"
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        approveStatus = "Onaylandı"
-        rejectReason = "Onaylandı"
+        approveStatus = "Approved"
+        rejectReason = "Approved"
       }else if(t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Reddedildi"
+        approveStatus = "Rejected"
         rejectReason = t.dataValues.Form.dataValues.RejectReason
       }
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
-        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Onaylandı":"Onay Sürecinde",
-        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Reddedildi":"Onay Sürecinde",
+        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Approved":"In the Approval Process",
+        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Rejected":"In the Approval Process",
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
         FormTypeId: formTypeId,
@@ -320,53 +320,53 @@ const handler = async (req, res) => {
       let grader = t.dataValues.GraderId;
       let formTypeId = t.dataValues.Form.FormType.dataValues.Id;
       let approveStatus = "";
-      let rejectReason = "Onay Sürecinde"
+      let rejectReason = "In the Approval Process"
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
         if(formTypeId == 1 || formTypeId == 2){
           if(!stakeholder && !dean && !head && !coordinator){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(stakeholder && !dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(stakeholder && dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else if(formTypeId == 3 || formTypeId == 4){
           if(!dean && !head && !coordinator){
-            formStatus = "Bölüm Başkanı Onayı Bekleniyor";
+            formStatus = "Waiting for The Head of the Department Approval";
           }else if(!dean && head && !coordinator){
-            formStatus = "Dekanlık Onayı Bekleniyor";
+            formStatus = "Waiting for Dean's Approval";
           }else if(dean && head && !coordinator){
-            formStatus = "Staj Koordinatörlüğü Onayı Bekleniyor";
+            formStatus = "Waiting for Internship Coordinator Approval";
           }
         }else{
           if(!stakeholder && !grader){
-            formStatus = "Paydaş Onayı Bekleniyor";
+            formStatus = "Waiting for Stakeholder Approval";
           }else if(stakeholder && !grader){
-            formStatus = "Asistan Onayı Bekleniyor";
+            formStatus = "Waiting for Grader Approval";
           }
         }
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        formStatus= "Onaylandı"
+        formStatus= "Approved"
       }else{
-        formStatus = "Reddedildi"
+        formStatus = "Rejected"
       }
       if(!t.dataValues.Form.dataValues.IsApproved && !t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Onay Sürecinde"
-        rejectReason = "Onay Sürecinde"
+        approveStatus = "In the Approval Process"
+        rejectReason = "In the Approval Process"
       }else if(t.dataValues.Form.dataValues.IsApproved){
-        approveStatus = "Onaylandı"
-        rejectReason = "Onaylandı"
+        approveStatus = "Approved"
+        rejectReason = "Approved"
       }else if(t.dataValues.Form.dataValues.IsRejected){
-        approveStatus = "Reddedildi"
+        approveStatus = "Rejected"
         rejectReason = t.dataValues.Form.dataValues.RejectReason
       }
       return {
         id: t.dataValues.Form.dataValues.UniqueKey,
         FormName: t.dataValues.Form.dataValues.Name,
-        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Onaylandı":"Onay Sürecinde",
-        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Reddedildi":"Onay Sürecinde",
+        IsApproved:t.dataValues.Form.dataValues.IsApproved ? "Approved":"In the Approval Process",
+        IsRejected:t.dataValues.Form.dataValues.IsRejected ? "Rejected":"In the Approval Process",
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormType: t.dataValues.Form.FormType.dataValues.Name,
         FormTypeId: formTypeId,

@@ -116,7 +116,7 @@ const handler = async (req, res) => {
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
         FormStatus:formStatus,
         ApproveStatus: approveStatus,
-        RejectReason: rejectReason
+        RejectReason: rejectReason,
       };
     });
     console.log("returned list:",list)
@@ -144,7 +144,7 @@ const handler = async (req, res) => {
             [Op.not]: true, // Like: sellDate IS NOT NULL
           },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","SendedEmail"],
         required: true,
       },
       attributes: ["HeadId"],
@@ -158,6 +158,7 @@ const handler = async (req, res) => {
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+        SendedEmail: t.dataValues.SendedEmail
       };
     });
   } else if (role == 3) {
@@ -183,7 +184,7 @@ const handler = async (req, res) => {
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
       },
-      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId"],
+      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId","SendedEmail"],
     }).map((t) => {
       let formStatus="";
       let stakeholder = t.dataValues.StakeholderId;
@@ -246,7 +247,8 @@ const handler = async (req, res) => {
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
         FormStatus:formStatus,
         ApproveStatus: approveStatus,
-        RejectReason: rejectReason
+        RejectReason: rejectReason,
+        SendedEmail: t.dataValues.SendedEmail
       };
     });
   } else if (role == 4) {
@@ -271,7 +273,7 @@ const handler = async (req, res) => {
             [Op.notIn]: [5,6]
           },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","SendedEmail"],
         required: true,
       },
       attributes: ["HeadId"],
@@ -285,6 +287,7 @@ const handler = async (req, res) => {
         LessonCode: t.dataValues.Form.dataValues.LessonCode,
         FormTypeId: t.dataValues.Form.FormType.dataValues.Id,
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('YYYY/MM/DD'),
+        SendedEmail: t.dataValues.SendedEmail
       };
     });
   } else if (role == 5) {
@@ -310,7 +313,7 @@ const handler = async (req, res) => {
         attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","IsApproved","IsRejected","RejectReason"],
         required: true,
       },
-      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId"],
+      attributes: ["HeadId","DeanId","CoordinatorId","StakeholderId","GraderId","SendedEmail"],
     }).map((t) => {
       let formStatus="";
       let stakeholder = t.dataValues.StakeholderId;
@@ -373,7 +376,8 @@ const handler = async (req, res) => {
         InsertedDate: moment(t.dataValues.Form.dataValues.InsertedDate).utc().format('DD/MM/YYYY'),
         FormStatus:formStatus,
         ApproveStatus: approveStatus,
-        RejectReason: rejectReason
+        RejectReason: rejectReason,
+        SendedEmail: t.dataValues.SendedEmail
       };
     });
   } else {

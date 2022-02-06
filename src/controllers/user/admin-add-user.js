@@ -3,7 +3,7 @@ var fs = require("fs");
 const connectToDatabase = require("../../lib/database");
 const { uuid } = require("../../helpers/utils");
 const md5 = require("md5");
-
+const moment = require('moment')
 const upload = async (req, res) => {
   const { User, UserRole, Role} = await connectToDatabase();
   try {
@@ -71,7 +71,7 @@ const upload = async (req, res) => {
             Address: tmp.address ? tmp.address:null,
             Phone: tmp.phone?tmp.phone:null,
             CitizenshipNo: tmp.citizenshipNo ? tmp.citizenshipNo:null, 
-            BirthDate: tmp.birthDate?tmp.birthDate:null
+            BirthDate: tmp.birthDate?moment(tmp.birthDate).format("DD/MM/YYYY"):null
           });
           const userRoleResult = await UserRole.create({
             UserId: userResult.dataValues.Id,

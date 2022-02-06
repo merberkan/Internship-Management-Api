@@ -144,10 +144,10 @@ const handler = async (req, res) => {
             [Op.not]: true, // Like: sellDate IS NOT NULL
           },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","SendedEmail"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
         required: true,
       },
-      attributes: ["HeadId"],
+      attributes: ["HeadId","SendedEmail"],
     }).map((t) => {
       console.log(t.dataValues.Form.FormType.dataValues.Name);
       console.log("-------------------------------------");
@@ -273,10 +273,10 @@ const handler = async (req, res) => {
             [Op.notIn]: [5,6]
           },
         },
-        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode","SendedEmail"],
+        attributes: ["UniqueKey", "Name", "InsertedDate","LessonCode"],
         required: true,
       },
-      attributes: ["HeadId"],
+      attributes: ["HeadId","SendedEmail"],
     }).map((t) => {
       console.log(t.dataValues.Form.FormType.dataValues.Name);
       console.log("-------------------------------------");
